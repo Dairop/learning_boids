@@ -1,12 +1,19 @@
 #include "creationGraphes.hpp"
-
+#include <filesystem>
 
 
 
 
 
 void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurGraphe, std::string axeX, std::string axeY, float maxValAxeX, sf::Vector3f couleur, bool remplir){
-    std::ofstream file("donnees/"+titre+".svg");
+    std::string current_directory = std::filesystem::current_path().generic_string();
+    std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
+    
+    std::ofstream file;
+    file.open(final_path, std::fstream::trunc);
+    std::cout << "Current Directory: " + final_path << std::endl;
+    std::cout << "Final Path: " << final_path << std::endl;
+
 
     if (file.is_open()) {
         float largeurSvg = largeurGraphe + 250.0f;
@@ -87,7 +94,7 @@ void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurG
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../donnees/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
     }
 }
 
@@ -104,7 +111,14 @@ void enregistrerEnSvg4Vecteurs1Graphe( std::string titre,
     std::string axeX, std::string axeY, std::string legende, float maxValAxeX){
 
 
-    std::ofstream file("donnees/"+titre+".svg");
+    std::string current_directory = std::filesystem::current_path().generic_string();
+    std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
+
+    std::ofstream file;
+    file.open(final_path, std::fstream::app);
+    file.clear();
+    std::cout << "Current Directory: " + final_path << std::endl;
+    std::cout << "Final Path: " << final_path << std::endl;
 
     if (file.is_open()) {
         float largeurSvg = 700.0f;
@@ -183,7 +197,7 @@ void enregistrerEnSvg4Vecteurs1Graphe( std::string titre,
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../donnees/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
     }
 
 }
@@ -201,7 +215,13 @@ void enregistrerEnSvg4Vecteurs1Graphe( std::string titre,
 
 
 void creerGrapheFrequence2Parametres(std::string titre, std::string axeX, std::string axeY, std::vector<sf::Vector3f>& data, unsigned int nbDivisionsEnX, unsigned int nbDivisionsEnY, sf::Vector3f color, std::string legende){
-    std::ofstream file("donnees/"+titre+".svg");
+    std::string current_directory = std::filesystem::current_path().generic_string();
+    std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
+
+    std::ofstream file;
+    file.open(final_path, std::fstream::app);
+    std::cout << "Current Directory: " + final_path << std::endl;
+    std::cout << "Final Path: " << final_path << std::endl;
 
     if (file.is_open()) {
         float largeurSvg = 700.0f;
@@ -283,7 +303,7 @@ void creerGrapheFrequence2Parametres(std::string titre, std::string axeX, std::s
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../donnees/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
     }
 
 

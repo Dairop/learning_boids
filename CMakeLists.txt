@@ -1,5 +1,4 @@
-﻿
-cmake_minimum_required(VERSION 3.10)
+﻿cmake_minimum_required(VERSION 3.10)
 set(PROJECT_NAME learning_boids)
 project(${PROJECT_NAME} VERSION 1.0.0 LANGUAGES CXX)
 
@@ -21,7 +20,6 @@ set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 add_executable(${PROJECT_NAME} ${SOURCES})
-
 #include images
 file(COPY ${CMAKE_SOURCE_DIR}/img DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
@@ -35,4 +33,4 @@ target_link_directories(${PROJECT_NAME} PRIVATE "include/SFML-2.6.0/lib")
 set(SFML_LIBS sfml-system sfml-window sfml-graphics)
 target_link_libraries(${PROJECT_NAME} ${SFML_LIBS})
 
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 11)
+set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)

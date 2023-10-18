@@ -11,8 +11,11 @@ void Fish::init() {
 
 	color = sf::Color::Cyan;
 
-	foodReserves = 100.0f;
+	foodReserves = 30.0f;
 	age = 0;
+
+	timerInteraction = 0;
+	maxTimerInteraction = 100;
 	//std::cout << std::to_string(colors[0].r) + " " + std::to_string(colors[0].g) + " " + std::to_string(colors[0].b) << " ;";
 }
 

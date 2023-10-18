@@ -2,6 +2,8 @@
 #include "moteur_ia/moteur.hpp"
 
 
+#include <filesystem>
+
 //	create one big vertexArray with every body-parts of fishes and draw 
 //	them all at once to minimize the number of draw calls
 void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::vector<Entity>* food, sf::Texture& object_texture) {

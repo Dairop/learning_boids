@@ -119,6 +119,7 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
 
         e.foodReserves -= timeElapsed/200000.0f;
         e.age += timeElapsed / 500000.0f;
+        e.timerInteraction -= timeElapsed/10000.0f;
         if (e.foodReserves < 0 || e.age > 100) e.isAlive = false;
     }
 
@@ -158,27 +159,24 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     }
 
 
-    //trouver les interactions et collisions
-    /*
+    //trouver les interactions
     for (unsigned int a = 0; a < ecureuils.size(); a++){
-        for (unsigned int b = a+1; b < ecureuils.size(); b++){
-            float d2 = dist2(ecureuils[a].position, ecureuils[b].position);
-            if (d2 < (ecureuils[a].taille+ecureuils[b].taille)*(ecureuils[a].taille+ecureuils[b].taille)){
-                //les ecureuils a et b se touchent
-                collision2cercles(ecureuils[a].position, ecureuils[b].position, ecureuils[a].orientation, ecureuils[b].orientation, 
-                ecureuils[a].taille, ecureuils[b].taille, d2);
+        rectByCenter r;
+        r.center = ecureuils[a].position;
+        r.radius = sf::Vector2f(ecureuils[a].size*2, ecureuils[a].size*2);
 
-                //interaction ?
-                if (ecureuils[a].timerInteraction <= 0.0f && ecureuils[b].timerInteraction <= 0.0f){
-                    uneInteraction(ecureuils[a], ecureuils[b]);
-                    
-                    ecureuils[a].timerInteraction = ecureuils[a].maxTimerInteraction;
-                    ecureuils[b].timerInteraction = ecureuils[b].maxTimerInteraction;
-                }
+        std::vector<Entity*> neighbors;
+        foodQuad.queryRangeCircle(r, neighbors);
+
+        for (unsigned int b; b < neighbors.size(); b++) {
+            if (ecureuils[a].timerInteraction <= 0.0f && ecureuils[b].timerInteraction <= 0.0f) {
+                uneInteraction(ecureuils[a], ecureuils[b]);
+
+                ecureuils[a].timerInteraction = ecureuils[a].maxTimerInteraction;
+                ecureuils[b].timerInteraction = ecureuils[b].maxTimerInteraction;
             }
         }
     }
-    */
 }
 
 
@@ -349,7 +347,7 @@ void Moteur::uneInteraction(Fish& e1, Fish& e2){
 
 
 void Moteur::genererFichiersAnalyseGlobale(){
-    enregisterEnSvg("Cycles de nourriture", this->cyclesNourriture, 1000.0f, "Temps", "Qtt de nourriture", tempsDepuisDebut, sf::Vector3f(50, 200, 20), false);
-    enregisterEnSvg("Population globale", this->population, 1000.0f, "Temps", "Population", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
-    enregisterEnSvg("Nb d'interactions", this->interactions, 1000.0f, "Temps", "Interactions", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
+    enregisterEnSvg("Cycles_de_nourriture", this->cyclesNourriture, 1000.0f, "Temps", "Qtt de nourriture", tempsDepuisDebut, sf::Vector3f(50, 200, 20), false);
+    enregisterEnSvg("Population_globale", this->population, 1000.0f, "Temps", "Population", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
+    enregisterEnSvg("Nb_d_interactions", this->interactions, 1000.0f, "Temps", "Interactions", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
 }

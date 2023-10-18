@@ -21,6 +21,11 @@ public:
 	float age;
 	float foodReserves;
 
+	//one entity have to wait some time after interacting with another one in order for them to 
+	// get away from one another and endure the result of the previous one
+	unsigned int timerInteraction;
+	unsigned int maxTimerInteraction;
+
 
 
 	void updateBody();
