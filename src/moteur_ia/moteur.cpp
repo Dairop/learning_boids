@@ -12,8 +12,8 @@ unsigned long int tempsDepuisDebut = 0;
 void Moteur::init(sf::Vector2u szEnv){
     this->sizeEnv = szEnv;
 
-    nbMinNoisettesParFrame = 3;
-    nbMaxNoisettesParFrame = 3;
+    nbMinNoisettesParFrame = 2;
+    nbMaxNoisettesParFrame = 4;
 
     especes.clear();
 
@@ -41,7 +41,7 @@ void Moteur::ajouterNoisette(){
     _x = rand() % (tx)+5.0f;
     _y = rand() % (ty)+5.0f;
 
-    noisettes.push_back(sf::Vector2f(_x, _y));
+    noisettes.push_back(Entity(sf::Vector2f(_x, _y)));
 }
 
 void Moteur::ajouterEcureuil(){
@@ -50,8 +50,8 @@ void Moteur::ajouterEcureuil(){
     int tx = (sizeEnv.x) - 10.0f;
     int ty = (sizeEnv.x) - 10.0f;
 
-    _x = rand() % (tx)-tx;
-    _y = rand() % (ty)-ty;
+    _x = rand() % (tx)+5.0f;
+    _y = rand() % (ty)+5.0f;
 
     Fish e(sf::Vector2f(_x, _y));
     ecureuils.push_back(e);
@@ -65,7 +65,7 @@ void Moteur::ajouterEcureuil(){
 
 
 
-void Moteur::update(QuadTree& quadTree, sf::Time& dt){
+void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     tempsDepuisDebut++;
 
 
@@ -111,14 +111,15 @@ void Moteur::update(QuadTree& quadTree, sf::Time& dt){
     }
 
 
-    float foodConsumption = dt.asMilliseconds() / 200.0f;
+    float timeElapsed = dt.asMicroseconds();
     //maj de tous les ecureuils
     for (Fish& e: ecureuils) {
-        e.update(sizeEnv, quadTree, dt);
+        e.updateFish(sizeEnv, boidsQuad, foodQuad, dt);
         e.updateBody();
 
-        e.foodReserves -= foodConsumption;
-        if (e.foodReserves < 0) e.isAlive = false;
+        e.foodReserves -= timeElapsed/200000.0f;
+        e.age += timeElapsed / 500000.0f;
+        if (e.foodReserves < 0 || e.age > 100) e.isAlive = false;
     }
 
     //supprimer ceux qui ne sont plus en vie
@@ -130,8 +131,17 @@ void Moteur::update(QuadTree& quadTree, sf::Time& dt){
         }
     }
 
+    for (unsigned int i = 0; i < noisettes.size(); ) {
+        if (!noisettes[i].isAlive) {
+            noisettes.erase(noisettes.begin() + i);
+        }
+        else {
+            i++;
+        }
+    }
+
     //ajouter des ecureuils aléatoires s'ils disparaissent
-    if (ecureuils.size() < 15){
+    if (ecureuils.size() < 100){
         //parfois la simulation reste bloquée et aucun agent n'arrive à prendre le dessus, dans ce cas on recommence la simulation
         if (tempsDepuisDebut > 1000) {
             this->init(sizeEnv);

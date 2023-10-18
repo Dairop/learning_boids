@@ -44,7 +44,7 @@ void Boid::draw(sf::VertexArray& va, int start) {
 }
 
 sf::Vector2f Boid::alignment(QuadTree& quad) {
-	std::vector<Boid*> nearbyPoints;
+	std::vector<Entity*> nearbyPoints;
 	rectByCenter range;
 	range.center = position;
 	range.radius = sf::Vector2f(this->size * 7, this->size * 7);
@@ -54,8 +54,11 @@ sf::Vector2f Boid::alignment(QuadTree& quad) {
 
 	if (nearbyPoints.size() > 0) {
 		for (int p = 0; p < nearbyPoints.size(); p++) {
-			steering.x += nearbyPoints[p]->vel.x;
-			steering.y += nearbyPoints[p]->vel.y;
+			Boid* boidPtr = static_cast<Boid*>(nearbyPoints[p]); // convert the Entity back to a point, 
+			//should return an error if something else than a Boid's Entity is in the QuadTree
+
+			steering.x += boidPtr ->vel.x;
+			steering.y += boidPtr->vel.y;
 		}
 		steering.x /= nearbyPoints.size();
 		steering.y /= nearbyPoints.size();
@@ -76,7 +79,7 @@ sf::Vector2f Boid::alignment(QuadTree& quad) {
 
 
 sf::Vector2f Boid::cohesion(QuadTree& quad) {
-	std::vector<Boid*> nearbyPoints;
+	std::vector<Entity*> nearbyPoints;
 	rectByCenter range;
 	range.center = position;
 	range.radius = sf::Vector2f(this->size * 6, this->size * 6);
@@ -114,7 +117,7 @@ sf::Vector2f Boid::cohesion(QuadTree& quad) {
 }
 
 sf::Vector2f Boid::separation(QuadTree& quad) {
-	std::vector<Boid*> nearbyPoints;
+	std::vector<Entity*> nearbyPoints;
 	rectByCenter range;
 	range.center = position;
 	range.radius = sf::Vector2f(this->size * 2.7, this->size * 2.7);
@@ -155,7 +158,7 @@ sf::Vector2f Boid::separation(QuadTree& quad) {
 
 
 
-void Boid::update(sf::Vector2u screenSize, QuadTree& quad, sf::Time& dt) {
+void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, sf::Time& dt){
 	//init
 	acceleration.x = 0;
 	acceleration.y = 0;
@@ -176,13 +179,13 @@ void Boid::update(sf::Vector2u screenSize, QuadTree& quad, sf::Time& dt) {
 	//acceleration = normalize(acceleration);
 
 	sf::Vector2f a;
-	a = alignment(quad);
+	a = alignment(boidsQuad);
 	acceleration.x += a.x * 0.5;
 	acceleration.y += a.y * 0.5;
-	a = cohesion(quad);
+	a = cohesion(boidsQuad);
 	acceleration.x += a.x * 0.05;
 	acceleration.y += a.y * 0.05;
-	a = separation(quad);
+	a = separation(boidsQuad);
 	acceleration.x += a.x * 3;
 	acceleration.y += a.y * 3;
 

@@ -4,7 +4,7 @@
 
 //	create one big vertexArray with every body-parts of fishes and draw 
 //	them all at once to minimize the number of draw calls
-void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::vector<sf::Vector2f>* food, sf::Texture& object_texture) {
+void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::vector<Entity>* food, sf::Texture& object_texture) {
 	int nbOfCircles = (boidsV->size() * boidsV->at(0).bodyLen << 2) + (food->size() << 2);
 
 	int nbOfCirclesDrawn = 0;
@@ -25,19 +25,21 @@ void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::ve
 	const float texture_size = 1024.0f;
 	float rad = 3;
 	unsigned int idx = nbOfCirclesDrawn << 2;
-	sf::Color algaeColor (101, 138, 24);
+	sf::Color algaeColor (151, 198, 50);
+	//sf::Color algaeColor(101, 138, 24);
+
 	for (int i = 0; i < food->size(); i++) {
-		va[idx + 0].position.x = food->at(i).x - rad;
-		va[idx + 0].position.y = food->at(i).y - rad;
+		va[idx + 0].position.x = food->at(i).position.x - rad;
+		va[idx + 0].position.y = food->at(i).position.y - rad;
 
-		va[idx + 1].position.x = food->at(i).x + rad;
-		va[idx + 1].position.y = food->at(i).y - rad;
+		va[idx + 1].position.x = food->at(i).position.x + rad;
+		va[idx + 1].position.y = food->at(i).position.y - rad;
 
-		va[idx + 2].position.x = food->at(i).x + rad;
-		va[idx + 2].position.y = food->at(i).y + rad;
+		va[idx + 2].position.x = food->at(i).position.x + rad;
+		va[idx + 2].position.y = food->at(i).position.y + rad;
 
-		va[idx + 3].position.x = food->at(i).x - rad;
-		va[idx + 3].position.y = food->at(i).y + rad;
+		va[idx + 3].position.x = food->at(i).position.x - rad;
+		va[idx + 3].position.y = food->at(i).position.y + rad;
 
 		va[idx + 0].texCoords = { 0.0f        , 0.0f };
 		va[idx + 1].texCoords = { texture_size, 0.0f };
@@ -89,7 +91,7 @@ int main() {
 
 
 	//vector with the position of the foods
-	std::vector<sf::Vector2f> *food = new std::vector<sf::Vector2f>();
+	std::vector<Entity> *food = new std::vector<Entity>();
 
 	//vector with the fishes positions
 	std::vector<Fish> *boidsV = new std::vector<Fish>;
@@ -120,21 +122,23 @@ int main() {
 	screenRect.radius = sf::Vector2f(windowWidth / 2, windowHeight / 2);
 	
 	//transparent black layer if we want to fill the screen with it later
+	/*
 	sf::RectangleShape black;
 	black.setSize(sf::Vector2f(windowWidth, windowHeight));
 	black.setFillColor(sf::Color(0, 0, 0, 10));
 	black.setPosition(sf::Vector2f(0, 0));
-	
+	*/
 
 
 
 
 
 	unsigned long long int nbOfFramesDisplayed = 0;
-	
+
 	while (window.isOpen()) {
 		//define quadtree
-		QuadTree *bigQuad = new QuadTree(screenRect);
+		QuadTree* boidsQuad = new QuadTree(screenRect);
+		QuadTree* foodQuad = new QuadTree(screenRect);
 
 		//events
 		while (window.pollEvent(event)) {
@@ -150,19 +154,23 @@ int main() {
 
 		//update window
 		//window.clear(sf::Color(15, 80, 60));
-		//window.draw(backgroundRocks);
-		if (nbOfFramesDisplayed%5==0)window.draw(black);
+		window.draw(backgroundRocks);
+		//if (nbOfFramesDisplayed%5==0)window.draw(black);
 
 
 		//fill the quadtree
 		for (int b = 0; b < boidsV->size(); b++) {
-			bigQuad->insert(&boidsV->at(b));
+			boidsQuad->insert(&boidsV->at(b));
+		}
+		//fill the quadtree
+		for (int f = 0; f < food->size(); f++) {
+			foodQuad->insert(&food->at(f));
 		}
 
 		//update position of boids if the simulation isn't paused
 		if (!pause) {
 			//update boids position
-			moteur.update((*bigQuad), dt);
+			moteur.update((*boidsQuad), (*foodQuad), dt);
 		}
 
 		//display the boids all at once
@@ -180,7 +188,8 @@ int main() {
 		//update display
 		window.display();
 		//delete the used quadtree (we will create a new one next frame)
-		bigQuad->del();
+		boidsQuad->del();
+		foodQuad->del();
 		
 		//delete bigQuad;
 		nbOfFramesDisplayed++;

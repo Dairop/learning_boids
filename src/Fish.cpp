@@ -72,3 +72,22 @@ void Fish::updateBody() {
 		prev = body[i];
 	}
 }
+
+
+
+
+void Fish::updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt) {
+	update(screenSize, boidsQuad, dt);
+
+	rectByCenter r;
+	r.center = this->position;
+	r.radius = sf::Vector2f(this->size, this->size);
+
+	std::vector<Entity*> food;
+	foodQuad.queryRangeCircle(r, food);
+
+	this->foodReserves += food.size() * 20;
+	for (unsigned int i = 0; i < food.size(); i++) {
+		food[i]->isAlive = false;
+	}
+}

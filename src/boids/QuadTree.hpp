@@ -2,8 +2,8 @@
 
 #include "commons.hpp"
 
-
-class Boid;
+#include "Entity.hpp"
+struct Entity;
 
 class QuadTree
 {
@@ -16,17 +16,17 @@ public:
 	rectByCenter boundary;
 
 	// Points de ce nœud de quadtree
-	std::vector <Boid*> points;
+	std::vector <Entity*> points;
 
 
 	// Méthodes
 	QuadTree(rectByCenter bd) { boundary = bd; northWest = nullptr; northEast = nullptr; southEast = nullptr; southWest = nullptr; };
-	bool insert(Boid* p);
+	bool insert(Entity* p);
 	void subdivide(); // créer quatre enfants permettant de diviser ce quadrant en quatre quadrants d'égales dimensions
-	void queryRangeRect(rectByCenter range, std::vector<Boid*> & pointsInRange);
-	void queryRangeCircle(rectByCenter range, std::vector<Boid*>& pointsInRange);
+	void queryRangeRect(rectByCenter range, std::vector<Entity*> & pointsInRange);
+	void queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange);
 	void display(sf::RenderWindow&);
-	void getAllParticles(std::vector<Boid*>& particles);
+	void getAllParticles(std::vector<Entity*>& particles);
 	void del();  // delete the QuadTree from the actual pos. to the leafs
 
 	// Enfants

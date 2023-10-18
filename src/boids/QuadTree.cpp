@@ -61,7 +61,7 @@ void QuadTree::del() {
     return;
 }
 
-void QuadTree::getAllParticles(std::vector<Boid*>& particles) {
+void QuadTree::getAllParticles(std::vector<Entity*>& particles) {
     if (northWest != nullptr) {
         northWest->getAllParticles(particles);
         northEast->getAllParticles(particles);
@@ -94,7 +94,7 @@ void QuadTree::subdivide() {
     southWest = new QuadTree(r);
 };
 
-bool QuadTree::insert(Boid* p) {
+bool QuadTree::insert(Entity* p) {
     if (isnan(p->position.x)) return false;
 
     // Insérer un point dans le QuadTree
@@ -133,7 +133,7 @@ bool QuadTree::insert(Boid* p) {
     return false;
 }
 
-void QuadTree::queryRangeRect(rectByCenter range, std::vector<Boid*>& pointsInRange) {
+void QuadTree::queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsInRange) {
     // skip if the quadtree isn't concerned
     if (!collideRectAndRect(range, boundary)) {
         return;
@@ -158,7 +158,7 @@ void QuadTree::queryRangeRect(rectByCenter range, std::vector<Boid*>& pointsInRa
     return;
 }
 
-void QuadTree::queryRangeCircle(rectByCenter range, std::vector<Boid*>& pointsInRange) {
+void QuadTree::queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange) {
     // skip if the quadtree isn't concerned
     if (!collideRectAndRect(range, boundary)) {
         return;

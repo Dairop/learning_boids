@@ -18,7 +18,7 @@ private:
 
 protected:
     std::vector<Fish>& ecureuils;
-    std::vector<sf::Vector2f>& noisettes;
+    std::vector<Entity>& noisettes;
     std::vector<Espece> especes;
 
 
@@ -26,10 +26,10 @@ protected:
     void ajouterEcureuil();
 
 public:  
-    Moteur(std::vector<Fish>& ecur, std::vector<sf::Vector2f>& nois) :
+    Moteur(std::vector<Fish>& ecur, std::vector<Entity>& nois) :
         ecureuils(ecur), noisettes(nois) {}
     void init(sf::Vector2u szEnv);
-    void update(QuadTree& quadTree, sf::Time& dt);
+    void update(QuadTree& quadTree, QuadTree& foodQuad, sf::Time& dt);
     void uneInteraction(Fish& e1, Fish& e2);
     void majLesEspeces();
     void reproduire(Fish& e1, Fish& e2);
