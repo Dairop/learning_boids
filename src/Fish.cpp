@@ -1,11 +1,28 @@
 #include "Fish.hpp"
 
 
+void Fish::init() {
+	body.clear();
+
+	body.push_back(position);
+	for (int i = 1; i < bodyLen + 1; i++) {
+		body.push_back(sf::Vector2f(position.x - i * nodeLen, position.y));
+	}
+
+	color = sf::Color::Cyan;
+
+	foodReserves = 100.0f;
+	age = 0;
+	//std::cout << std::to_string(colors[0].r) + " " + std::to_string(colors[0].g) + " " + std::to_string(colors[0].b) << " ;";
+}
+
+
 void Fish::draw(sf::VertexArray& va, int start) {
 
 	const float texture_size = 1024.0f;
 	unsigned int idx;
 	int rad;
+
 
 	for (unsigned int i = 0; i < bodyLen; i++) {
 		idx = start + (i << 2);
@@ -28,11 +45,30 @@ void Fish::draw(sf::VertexArray& va, int start) {
 		va[idx + 2].texCoords = { texture_size, texture_size };
 		va[idx + 3].texCoords = { 0.0f        , texture_size };
 
-		const sf::Color color = colors[i + 1];
-		va[idx + 0].color = color;
-		va[idx + 1].color = color;
-		va[idx + 2].color = color;
-		va[idx + 3].color = color;
+		va[idx + 0].color = this->color;
+		va[idx + 1].color = this->color;
+		va[idx + 2].color = this->color;
+		va[idx + 3].color = this->color;
 	}
 
+}
+
+
+
+
+
+void Fish::updateBody() {
+	//lenght of each node in pixel
+	sf::Vector2f prev; prev.x = position.x; prev.y = position.y;
+	for (int i = 0; i < bodyLen; i++) {
+		sf::Vector2f act = body[i];
+		float actDist = dist(prev, act);
+		//std::cout << ' ' << actDist;
+		float dx = (act.x - prev.x) / actDist;
+		float dy = (act.y - prev.y) / actDist;
+		//std::cout <<"  dx:" << dx << " dy: " << dy;
+		body[i] = add(prev, mult(sf::Vector2f(dx, dy), nodeLen));
+
+		prev = body[i];
+	}
 }

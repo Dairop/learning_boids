@@ -12,39 +12,35 @@
 
 
 void Boid::draw(sf::VertexArray& va, int start) {
-
 	const float texture_size = 1024.0f;
 	unsigned int idx;
 	int rad;
 
-	for (unsigned int i = 0; i < bodyLen; i++) {
-		idx = start + (i << 2);
-		rad = this->size / ((float)i / 4 + 1);
+	idx = start;
+	rad = this->size;
 
-		va[idx + 0].position.x = body[i].x - rad;
-		va[idx + 0].position.y = body[i].y - rad;
+	va[idx + 0].position.x = position.x - rad;
+	va[idx + 0].position.y = position.y - rad;
 
-		va[idx + 1].position.x = body[i].x + rad;
-		va[idx + 1].position.y = body[i].y - rad;
+	va[idx + 1].position.x = position.x + rad;
+	va[idx + 1].position.y = position.y - rad;
 
-		va[idx + 2].position.x = body[i].x + rad;
-		va[idx + 2].position.y = body[i].y + rad;
+	va[idx + 2].position.x = position.x + rad;
+	va[idx + 2].position.y = position.y + rad;
 
-		va[idx + 3].position.x = body[i].x - rad;
-		va[idx + 3].position.y = body[i].y + rad;
+	va[idx + 3].position.x = position.x - rad;
+	va[idx + 3].position.y = position.y + rad;
 
-		va[idx + 0].texCoords = { 0.0f        , 0.0f };
-		va[idx + 1].texCoords = { texture_size, 0.0f };
-		va[idx + 2].texCoords = { texture_size, texture_size };
-		va[idx + 3].texCoords = { 0.0f        , texture_size };
+	va[idx + 0].texCoords = { 0.0f        , 0.0f };
+	va[idx + 1].texCoords = { texture_size, 0.0f };
+	va[idx + 2].texCoords = { texture_size, texture_size };
+	va[idx + 3].texCoords = { 0.0f        , texture_size };
 
-		const sf::Color color = colors[i + 1];
-		va[idx + 0].color = color;
-		va[idx + 1].color = color;
-		va[idx + 2].color = color;
-		va[idx + 3].color = color;
-	}
-
+	const sf::Color color = sf::Color::Red;
+	va[idx + 0].color = color;
+	va[idx + 1].color = color;
+	va[idx + 2].color = color;
+	va[idx + 3].color = color;
 }
 
 sf::Vector2f Boid::alignment(QuadTree& quad) {
@@ -157,21 +153,6 @@ sf::Vector2f Boid::separation(QuadTree& quad) {
 
 }
 
-void Boid::updateBody() {
-	//lenght of each node in pixel
-	sf::Vector2f prev; prev.x = position.x; prev.y = position.y;
-	for (int i = 0; i < bodyLen; i++) {
-		sf::Vector2f act = body[i];
-		float actDist = dist(prev, act);
-		//std::cout << ' ' << actDist;
-		float dx = (act.x - prev.x) / actDist;
-		float dy = (act	.y - prev.y) / actDist;
-		//std::cout <<"  dx:" << dx << " dy: " << dy;
-		body[i] = add(prev, mult(sf::Vector2f(dx, dy), nodeLen));
-		
-		prev = body[i];
-	}
-}
 
 
 void Boid::update(sf::Vector2u screenSize, QuadTree& quad, sf::Time& dt) {
@@ -183,17 +164,14 @@ void Boid::update(sf::Vector2u screenSize, QuadTree& quad, sf::Time& dt) {
 	if (position.x < 0) {
 		acceleration.x = speed*1.5;
 	}
-	else 	if (position.x > screenSize.x) {
+	else if (position.x > screenSize.x) {
 		acceleration.x = -speed*1.5;
-
 	}
 	if (position.y < 0) {
 		acceleration.y = speed*1.5;
-
 	}
 	else if (position.y > screenSize.y) {
 		acceleration.y = -speed*1.5;
-
 	}
 	//acceleration = normalize(acceleration);
 
@@ -221,6 +199,4 @@ void Boid::update(sf::Vector2u screenSize, QuadTree& quad, sf::Time& dt) {
 
 	position.x += vel.x * speed * dt.asMilliseconds() / 1000;
 	position.y += vel.y * speed * dt.asMilliseconds() / 1000;
-
-	updateBody();
 }

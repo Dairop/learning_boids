@@ -29,7 +29,7 @@ public:
     Moteur(std::vector<Fish>& ecur, std::vector<sf::Vector2f>& nois) :
         ecureuils(ecur), noisettes(nois) {}
     void init(sf::Vector2u szEnv);
-    void update();
+    void update(QuadTree& quadTree, sf::Time& dt);
     void uneInteraction(Fish& e1, Fish& e2);
     void majLesEspeces();
     void reproduire(Fish& e1, Fish& e2);

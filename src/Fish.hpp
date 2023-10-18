@@ -7,13 +7,16 @@
 
 class Fish: public Boid {
 public:
-	sf::Vector2f position; //position of the head
-	std::vector<Boid*> spinePoints;
+	std::vector<sf::Color> colors;
+	std::vector<sf::Vector2f> body;
+	unsigned int bodyLen = 8;
+	float fishLenght = size * 5;
+	float nodeLen = fishLenght / bodyLen;
 
 
-	unsigned int idEspece;
+	unsigned int idEspece = 0;
 	ReseauNeurones NN;
-	sf::Vector3f color;
+	sf::Color color;
 
 	float age;
 	float foodReserves;
@@ -21,11 +24,13 @@ public:
 	bool isAlive;
 
 
-	void updateSpine(int iterationsLeft);
+	void updateBody();
 	void draw(sf::VertexArray& va, int start) override;
+	void init();
 
 	Fish(sf::Vector2f pos) : Boid(pos) {
 		isAlive = true;
+		init();
 	}
 };
 

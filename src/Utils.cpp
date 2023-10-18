@@ -70,13 +70,17 @@ std::string v3ToString(sf::Vector3f v) {
     return "(" + std::to_string(v.x) + ", " + std::to_string(v.y) + ", " + std::to_string(v.z) + ")";
 }
 
+std::string colorToString(sf::Color c) {
+    return "(" + std::to_string(c.r) + ", " + std::to_string(c.g) + ", " + std::to_string(c.b) + ")";
+}
 
 
-sf::Vector3f HSVtoRGB(float H, float S, float V) {   // h:0-360.0, s:0.0-1.0, v:0.0-1.0
+
+sf::Color HSVtoRGB(float H, float S, float V) {   // h:0-360.0, s:0.0-1.0, v:0.0-1.0
 	S *= 100; V *= 100;
 	if (H > 360 || H < 0 || S>100 || S < 0 || V>100 || V < 0) {
 		std::cout << "The given HSV values are not in valid range" << H << " " << S << " " << V << "\n";
-		return sf::Vector3f(0, 0, 0);
+		return sf::Color(0, 0, 0);
 	}
 	float s = S / 100;
 	float v = V / 100;
@@ -106,7 +110,7 @@ sf::Vector3f HSVtoRGB(float H, float S, float V) {   // h:0-360.0, s:0.0-1.0, v:
 	int G = (g + m) * 255;
 	int B = (b + m) * 255;
 
-	return sf::Vector3f(R, G, B);
+	return sf::Color(R, G, B);
 }
 
 
@@ -120,7 +124,7 @@ inline float min3(float a, float b, float c) {
 }
 
 
-sf::Vector3f RGBtoHSV(float R, float G, float B){
+sf::Color RGBtoHSV(float R, float G, float B){
     //https://en.wikipedia.org/wiki/HSL_and_HSV
     R /= 255.0f; G /= 255.0f; B /= 255.0f;
 
@@ -157,12 +161,12 @@ sf::Vector3f RGBtoHSV(float R, float G, float B){
         h += 360;
     }
 
-    return sf::Vector3f(h, s, v);
+    return sf::Color(h, s, v);
 }
 
 
 
-void coloredStdCout(std::string str, sf::Vector3f color){
+void coloredStdCout(std::string str, sf::Color color){
     //afficher en couleur (blanc de base)
     //https://en.wikipedia.org/wiki/ANSI_escape_code
     if (!activer_couleurs_terminal) {
@@ -173,21 +177,21 @@ void coloredStdCout(std::string str, sf::Vector3f color){
     std::string colorStrDebut = "\033[;97m";
     std::string colorStrFin = "\033[0m";
     
-    if (color.x > 127){
-        if (color.y > 127) { // jaune
+    if (color.r > 127){
+        if (color.g > 127) { // jaune
             colorStrDebut = "\033[;93m";
-        } else if (color.z > 127) { // magenta
+        } else if (color.b > 127) { // magenta
             colorStrDebut = "\033[;95m";
         } else { // rouge
             colorStrDebut = "\033[;91m";
         }
-    } else if (color.y > 127){
-        if (color.z > 127){ // cyan
+    } else if (color.g > 127){
+        if (color.b > 127){ // cyan
             colorStrDebut = "\033[;96m";
         } else { // vert
             colorStrDebut = "\033[;92m";
         }
-    } else if (color.z > 127){ // bleu
+    } else if (color.b > 127){ // bleu
             colorStrDebut = "\033[;94m";
     }
     

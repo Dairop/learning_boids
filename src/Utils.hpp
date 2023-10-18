@@ -42,15 +42,15 @@ float dist2(const sf::Vector2f p1, const sf::Vector2f p2);
 
 
 std::string v2toString(sf::Vector2f v);
-
 std::string v3ToString(sf::Vector3f v);
+std::string colorToString(sf::Color c);
 
 
-sf::Vector3f HSVtoRGB(float H, float S, float V); // h:0-360.0, s:0.0-1.0, v:0.0-1.0
-sf::Vector3f RGBtoHSV(float R, float G, float B); // (0-255, 0-255, 0-255) -> (0-360.0, 0.0-1.0, 0.0-1.0)
+sf::Color HSVtoRGB(float H, float S, float V); // h:0-360.0, s:0.0-1.0, v:0.0-1.0
+sf::Color RGBtoHSV(float R, float G, float B); // (0-255, 0-255, 0-255) -> (0-360.0, 0.0-1.0, 0.0-1.0)
 
 
-void coloredStdCout(std::string str, sf::Vector3f color); // cout dans 7 couleurs possibles, on selectionne la plus proche de celle passee en parametre. Blanc par défaut
+void coloredStdCout(std::string str, sf::Color color); // cout dans 7 couleurs possibles, on selectionne la plus proche de celle passee en parametre. Blanc par défaut
 
 
 float randomNormalDistrib(float precision); //renvoie un nombre aléatoire entre 0 et 1 avec une distribution normale comme probabilité

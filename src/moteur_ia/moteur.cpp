@@ -65,8 +65,9 @@ void Moteur::ajouterEcureuil(){
 
 
 
-void Moteur::update(){
+void Moteur::update(QuadTree& quadTree, sf::Time& dt){
     tempsDepuisDebut++;
+
 
     //crée des cycles d'abondance de nourriture et de manques
     //https://www.desmos.com/calculator/ezsdetdjqi 
@@ -76,14 +77,19 @@ void Moteur::update(){
 
 
     if (tempsDepuisDebut%1000 == 0){
+        std::cout << "\nsaving data" << std::endl;
+
         //données pour l'analyse
         this->cyclesNourriture.push_back(nbNoisettesParFrameCycles);
         this->population.push_back(ecureuils.size());
         this->interactions.push_back(nbInteractions100Frames);
         nbInteractions100Frames = 0;
 
+
         //générer les graphes d'analyse
-        if (tempsDepuisDebut%100000 == 0){
+        if (tempsDepuisDebut%1000 == 0){
+            std::cout << "\ncreating graphs" << std::endl;
+
             this->genererFichiersAnalyseGlobale();
         }
     }
@@ -97,18 +103,22 @@ void Moteur::update(){
 
 
     if (this->framesDepuisDerniereMajEspece >= 100){
+        std::cout << "\nupdating species" << std::endl;
         majLesEspeces();
         this->framesDepuisDerniereMajEspece = 0;
-
     } else {
         this->framesDepuisDerniereMajEspece++;
     }
 
 
-
+    float foodConsumption = dt.asMilliseconds() / 200.0f;
     //maj de tous les ecureuils
     for (Fish& e: ecureuils) {
-        //e.update(noisettes);
+        e.update(sizeEnv, quadTree, dt);
+        e.updateBody();
+
+        e.foodReserves -= foodConsumption;
+        if (e.foodReserves < 0) e.isAlive = false;
     }
 
     //supprimer ceux qui ne sont plus en vie
@@ -195,14 +205,14 @@ void entreesReseau(std::vector<float>& v1, Fish& e1, Fish& e2){
 void Moteur::reproduire(Fish& e1, Fish& e2){
     //on utilise des pointeurs car on ne peut pas faire de redéfinition dans un switch case 
     Fish e = Fish(mult(add(e1.position, e2.position), 0.5f));
-    sf::Vector3f hsvC; // couleur de l'écureuil parent
+    sf::Color hsvC; // couleur de l'écureuil parent
     
     if (rand()%2){ 
         e.NN.copier(e1.NN);
-        hsvC = RGBtoHSV(e1.color.x, e1.color.y, e1.color.z);
+        hsvC = RGBtoHSV(e1.color.r, e1.color.g, e1.color.b);
     } else {
         e.NN.copier(e2.NN);
-        hsvC = RGBtoHSV(e2.color.x, e2.color.y, e2.color.z);
+        hsvC = RGBtoHSV(e2.color.r, e2.color.g, e2.color.b);
     }
 
     //taux de mutation

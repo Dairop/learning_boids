@@ -11,7 +11,7 @@ public:
     unsigned int _id;
     ReseauNeurones _reseauBase;
     unsigned int _age = 0;
-    sf::Vector3f _color;
+    sf::Color _color;
 
     Espece(unsigned int id, ReseauNeurones reseauBase): _id(id), _reseauBase(reseauBase) {
         _color = HSVtoRGB(_id%360, 1.0f, 1.0f);

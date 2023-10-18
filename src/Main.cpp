@@ -38,7 +38,7 @@ int main() {
 	int windowWidth = 1920;
 	int windowHeight = 1080;
 
-	int numberOfBoids = 1000;
+	int numberOfBoids = 200;
 
 	sf::Texture backgroundRocksTexture;
 	backgroundRocksTexture.loadFromFile("img/rocks.png");
@@ -53,42 +53,50 @@ int main() {
 	sf::Texture circleText;
 	circleText.loadFromFile("img/circle.png");
 
-
+	//creation of the fishes
 	std::vector<Fish> *boidsV = new std::vector<Fish>;
 	for (int i = 0; i < numberOfBoids; i++) {
 		Fish mt(sf::Vector2f((i*23)%windowWidth, ((i + 31) * 63)%windowHeight)); //new one each time, so they get a new orientation & pos
 		boidsV->push_back(mt);
 	}
 
+	//creation of the timer to calculate dt beween each update and the FPS
 	sf::Clock deltaClock;
 	sf::Time dt = deltaClock.restart();
 
+	//creation of the window
 	sf::RenderWindow window(sf::VideoMode(windowWidth, windowHeight), "Name");
 	const sf::Vector2i viewCenter = sf::Vector2i(-9, -38);
 	window.setPosition(viewCenter);
 	window.clear(sf::Color(0, 0, 0));
-	
-	//fill screen with a transparent black layer
-	
-	sf::RectangleShape black;
-	black.setSize(sf::Vector2f(windowWidth, windowHeight));
-	black.setFillColor(sf::Color(0, 0, 0, 10));
-	black.setPosition(sf::Vector2f(0, 0));
-	
 
 	sf::Event event;
 	rectByCenter screenRect;
 
 	screenRect.center = sf::Vector2f(windowWidth / 2, windowHeight / 2);
 	screenRect.radius = sf::Vector2f(windowWidth / 2, windowHeight / 2);
+	
+	//transparent black layer if we want to fill the screen with it later
+	sf::RectangleShape black;
+	black.setSize(sf::Vector2f(windowWidth, windowHeight));
+	black.setFillColor(sf::Color(0, 0, 0, 10));
+	black.setPosition(sf::Vector2f(0, 0));
+	
 
 
+
+
+	//vector with the position of the foods
 	std::vector<sf::Vector2f> food;
 
+
+	//creation of the ai' engine
 	Moteur moteur(*(boidsV), food);
 	moteur.init(sf::Vector2u(windowWidth, windowHeight));
 
-	unsigned long long int nbOfFramesPassed = 0;
+
+	unsigned long long int nbOfFramesDisplayed = 0;
+	
 	while (window.isOpen()) {
 		//define quadtree
 		QuadTree *bigQuad = new QuadTree(screenRect);
@@ -108,7 +116,7 @@ int main() {
 		//update window
 		//window.clear(sf::Color(15, 80, 60));
 		//window.draw(backgroundRocks);
-		if (nbOfFramesPassed%5==0)window.draw(black);
+		if (nbOfFramesDisplayed%5==0)window.draw(black);
 
 
 		//fill the quadtree
@@ -117,14 +125,9 @@ int main() {
 		}
 
 		//update position of boids if the simulation isn't paused
-		sf::Vector2u windowSize = sf::Vector2u(windowWidth, windowHeight);
-		for (int b = 0; b < numberOfBoids; b++) {
-			if (!pause) {
-				//update boids position
-				boidsV->at(b).update(windowSize, *bigQuad, dt);
-
-				//
-			}
+		if (!pause) {
+			//update boids position
+			moteur.update((*bigQuad), dt);
 		}
 
 		//display the boids all at once
@@ -145,7 +148,7 @@ int main() {
 		bigQuad->del();
 		
 		//delete bigQuad;
-		nbOfFramesPassed++;
+		nbOfFramesDisplayed++;
 	}
 	
 	return 0;

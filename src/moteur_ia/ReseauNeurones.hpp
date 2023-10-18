@@ -14,22 +14,23 @@ public:
         // yn = x(n-1)
         //(x1, y1) = (5, 0) et x(n_max) = 4
 
-        /*
+        
         //reseaux simples, apprentissage rapide mais peu-complexe
         couches.push_back(Couche(5, 0));
         couches.push_back(Couche(6, 5));
         couches.push_back(Couche(4, 6));
-        */
+        
         
 
         //apprentissage plus long mais en théorie meilleur
-        
+        /*
         couches.push_back(Couche(5, 0));
         couches.push_back(Couche(9, 5));        
         couches.push_back(Couche(7, 9));
         couches.push_back(Couche(9, 7));
         couches.push_back(Couche(6, 9));
         couches.push_back(Couche(4, 6));
+        */
     }
 
     void copier(const ReseauNeurones& r2);

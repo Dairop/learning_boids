@@ -126,7 +126,7 @@ void majEspeceDesIndividus(const std::vector<Espece>& especes, std::vector<Fish>
 
 
 std::string Espece::toString() const {
-    return "Age: "+std::to_string(_age)+"  id: "+std::to_string(_id) +"  Couleur: "+ v3ToString(_color) +"\n"; 
+    return "Age: "+std::to_string(_age)+"  id: "+std::to_string(_id) +"  Couleur: "+ colorToString(_color) +"\n"; 
 }
 
 void afficherEspeces(const std::vector<Espece>& especes) {
