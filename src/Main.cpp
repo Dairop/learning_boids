@@ -4,8 +4,8 @@
 
 //	create one big vertexArray with every body-parts of fishes and draw 
 //	them all at once to minimize the number of draw calls
-void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, sf::Texture& object_texture) {
-	int nbOfCircles = boidsV->size() * boidsV->at(0).bodyLen << 2;
+void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::vector<sf::Vector2f>* food, sf::Texture& object_texture) {
+	int nbOfCircles = (boidsV->size() * boidsV->at(0).bodyLen << 2) + (food->size() << 2);
 
 	int nbOfCirclesDrawn = 0;
 
@@ -14,11 +14,44 @@ void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, sf::Tex
 
 	va.resize(nbOfCircles);
 
+	//push the verticies of the fishes
 	for (int i = 0; i < boidsV->size(); i++) {
-		boidsV->at(i).draw(va, nbOfCirclesDrawn);
-		nbOfCirclesDrawn += boidsV->at(i).bodyLen<<2;
+		boidsV->at(i).draw(va, nbOfCirclesDrawn<<2);
+		nbOfCirclesDrawn += boidsV->at(i).bodyLen;
 	}
 
+	
+	//same for the food
+	const float texture_size = 1024.0f;
+	float rad = 3;
+	unsigned int idx = nbOfCirclesDrawn << 2;
+	sf::Color algaeColor (101, 138, 24);
+	for (int i = 0; i < food->size(); i++) {
+		va[idx + 0].position.x = food->at(i).x - rad;
+		va[idx + 0].position.y = food->at(i).y - rad;
+
+		va[idx + 1].position.x = food->at(i).x + rad;
+		va[idx + 1].position.y = food->at(i).y - rad;
+
+		va[idx + 2].position.x = food->at(i).x + rad;
+		va[idx + 2].position.y = food->at(i).y + rad;
+
+		va[idx + 3].position.x = food->at(i).x - rad;
+		va[idx + 3].position.y = food->at(i).y + rad;
+
+		va[idx + 0].texCoords = { 0.0f        , 0.0f };
+		va[idx + 1].texCoords = { texture_size, 0.0f };
+		va[idx + 2].texCoords = { texture_size, texture_size };
+		va[idx + 3].texCoords = { 0.0f        , texture_size };
+
+		va[idx + 0].color = algaeColor;
+		va[idx + 1].color = algaeColor;
+		va[idx + 2].color = algaeColor;
+		va[idx + 3].color = algaeColor;
+
+		nbOfCirclesDrawn += 1;
+		idx += 4;
+	}
 
 	sf::RenderStates states;
 	states.texture = &object_texture;
@@ -53,12 +86,22 @@ int main() {
 	sf::Texture circleText;
 	circleText.loadFromFile("img/circle.png");
 
-	//creation of the fishes
+
+
+	//vector with the position of the foods
+	std::vector<sf::Vector2f> *food = new std::vector<sf::Vector2f>();
+
+	//vector with the fishes positions
 	std::vector<Fish> *boidsV = new std::vector<Fish>;
 	for (int i = 0; i < numberOfBoids; i++) {
-		Fish mt(sf::Vector2f((i*23)%windowWidth, ((i + 31) * 63)%windowHeight)); //new one each time, so they get a new orientation & pos
+		Fish mt(sf::Vector2f((i * 23) % windowWidth, ((i + 31) * 63) % windowHeight)); //new one each time, so they get a new orientation & pos
 		boidsV->push_back(mt);
 	}
+
+	//creation of the ai' engine
+	Moteur moteur((*boidsV), (*food));
+	moteur.init(sf::Vector2u(windowWidth, windowHeight));
+
 
 	//creation of the timer to calculate dt beween each update and the FPS
 	sf::Clock deltaClock;
@@ -85,14 +128,6 @@ int main() {
 
 
 
-
-	//vector with the position of the foods
-	std::vector<sf::Vector2f> food;
-
-
-	//creation of the ai' engine
-	Moteur moteur(*(boidsV), food);
-	moteur.init(sf::Vector2u(windowWidth, windowHeight));
 
 
 	unsigned long long int nbOfFramesDisplayed = 0;
@@ -131,7 +166,7 @@ int main() {
 		}
 
 		//display the boids all at once
-		drawAllCircles(window, boidsV, circleText);
+		drawAllCircles(window, boidsV, food, circleText);
 
 		//draw the layer on top of the boids
 		//window.draw(water);

@@ -38,8 +38,8 @@ void Moteur::ajouterNoisette(){
     int tx = (sizeEnv.x) - 10.0f;
     int ty = (sizeEnv.x) - 10.0f;
 
-    _x = rand()%(tx) - tx;
-    _y = rand()%(ty) - ty;
+    _x = rand() % (tx)+5.0f;
+    _y = rand() % (ty)+5.0f;
 
     noisettes.push_back(sf::Vector2f(_x, _y));
 }
