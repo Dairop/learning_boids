@@ -3,7 +3,7 @@
 "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
 <svg width="1250.000000" height="550.000000"
 xmlns="http://www.w3.org/2000/svg">
-<polyline points="-2147483648,75 " style="fill:none;stroke:#32C814;stroke-width:3;stroke-linejoin:bevel" /><line x1="150" y1="75" x2="150" y2="475" style="stroke:black;stroke-width:2"/>
+<polyline points="150,75 183,75 216,75 250,75 283,75 316,75 350,75 383,75 416,75 450,75 483,75 516,75 550,75 583,75 616,75 650,75 683,75 716,75 750,75 783,75 816,75 850,75 883,75 916,75 950,75 983,75 1016,75 1050,75 1083,75 1116,75 1150,75 " style="fill:none;stroke:#32C814;stroke-width:3;stroke-linejoin:bevel" /><line x1="150" y1="75" x2="150" y2="475" style="stroke:black;stroke-width:2"/>
 <line x1="150" y1="475" x2="1400" y2="475" style="stroke:black;stroke-width:2"/>
 <text x="450.000000" y="25">Cycles_de_nourriture</text>
 <text x="10" y="275.000000">Qtt de nourriture</text>
@@ -17,9 +17,9 @@ xmlns="http://www.w3.org/2000/svg">
 <text x="100.000000" y="132.142853">3.428</text>
 <text x="100.000000" y="75.000000">4.000</text>
 <text x="150.000000" y="490.000000">0.000</text>
-<text x="350.000000" y="490.000000">0.000</text>
-<text x="550.000000" y="490.000000">0.000</text>
-<text x="750.000000" y="490.000000">0.000</text>
-<text x="950.000000" y="490.000000">0.000</text>
-<text x="1150.000000" y="490.000000">0.000</text>
+<text x="350.000000" y="490.000000">4.800</text>
+<text x="550.000000" y="490.000000">9.600</text>
+<text x="750.000000" y="490.000000">14.40</text>
+<text x="950.000000" y="490.000000">19.20</text>
+<text x="1150.000000" y="490.000000">24.00</text>
 </svg>

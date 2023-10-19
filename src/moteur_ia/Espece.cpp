@@ -8,7 +8,7 @@ const unsigned int NB_ESPECES_TOP = 15; // nombre d'espèces sauvegardées dans 
 const int DIVERSITE_GENETIQUE_UNE_ESPECE = 75.0f;
 
 unsigned int tempsDepuisAnalyse = 0;
-const unsigned int analyserTousLes = 1000;
+const unsigned int analyserTousLes = 250;
 
 unsigned int prevAnalyse = 0; // afin de ne pas analyser 2x le même réseau de neurones 
 
@@ -95,7 +95,7 @@ void majVecteurEspeces(std::vector<Espece>& especes, const std::vector<Fish>& ec
         }
 
         if (!aUneEspece){
-            especes.push_back(Espece(rand(), ec.NN));
+            especes.push_back(Espece(rand()%10000000, ec.NN));
         }
     }
 }

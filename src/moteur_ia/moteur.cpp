@@ -75,7 +75,7 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
     int nbNoisettesParFrameCycles = a_cycles + (b_cycles-a_cycles) * (std::sin( ((float) tempsDepuisDebut)/10000 )*0.5+0.5) ;
 
 
-    if (tempsDepuisDebut%1000 == 0){
+    if (tempsDepuisDebut%100 == 0){
         //données pour l'analyse
         this->cyclesNourriture.push_back(nbNoisettesParFrameCycles);
         this->population.push_back(ecureuils.size());
@@ -337,7 +337,16 @@ void Moteur::uneInteraction(Fish& e1, Fish& e2){
 
 
 void Moteur::genererFichiersAnalyseGlobale(){
-    enregisterEnSvg("Cycles_de_nourriture", this->cyclesNourriture, 1000.0f, "Temps", "Qtt de nourriture", tempsDepuisDebut, sf::Vector3f(50, 200, 20), false);
-    enregisterEnSvg("Population_globale", this->population, 1000.0f, "Temps", "Population", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
-    enregisterEnSvg("Nb_d_interactions", this->interactions, 1000.0f, "Temps", "Interactions", tempsDepuisDebut, sf::Vector3f(0, 00, 255), false);
+    //can't use tempsDepuisDebut as an input because it value can cause undefined behavior in the function if too big
+    float tempsEnFloatSimplifie;
+    if (tempsDepuisDebut/1000 <= std::numeric_limits<float>::max()) {
+        tempsEnFloatSimplifie = static_cast<float>(tempsDepuisDebut/1000)-1;
+    }
+    else {
+        tempsEnFloatSimplifie = std::numeric_limits<float>::max();
+    }
+
+    enregisterEnSvg("Cycles_de_nourriture", this->cyclesNourriture, 1000.0f, "Temps", "Qtt de nourriture", tempsEnFloatSimplifie, sf::Vector3f(50, 200, 20), false);
+    enregisterEnSvg("Population_globale", this->population, 1000.0f, "Temps", "Population", tempsEnFloatSimplifie, sf::Vector3f(0, 00, 255), false);
+    enregisterEnSvg("Nb_d_interactions", this->interactions, 1000.0f, "Temps", "Interactions", tempsEnFloatSimplifie, sf::Vector3f(0, 00, 255), false);
 }

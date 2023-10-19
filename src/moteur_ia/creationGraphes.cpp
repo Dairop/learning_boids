@@ -13,6 +13,10 @@ void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurG
     file.open(final_path, std::fstream::trunc);
 
     if (file.is_open()) {
+        //don't display some elements of the data if the vector is too big
+        int increment = 1;
+        if (data.size() > 100) increment = data.size() / 20;
+
         float largeurSvg = largeurGraphe + 250.0f;
 
         float hauteurSvg = 550.0f;
@@ -23,7 +27,7 @@ void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurG
         float decalageY = 75.0f;
 
         float hauteurMax = data[0];
-        for (unsigned int it = 0; it < data.size(); it++){
+        for (unsigned int it = 0; it < data.size(); it+=increment){
             if (hauteurMax < data[it]) hauteurMax = data[it];
         }
 
