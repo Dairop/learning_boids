@@ -212,6 +212,8 @@ void creerGrapheFrequence2Parametres(std::string titre, std::string axeX, std::s
     std::string current_directory = std::filesystem::current_path().generic_string();
     std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
 
+
+    std::cout << "\nWriting " + legende;
     std::ofstream file;
     file.open(final_path, std::fstream::trunc);
 

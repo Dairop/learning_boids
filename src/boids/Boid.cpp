@@ -158,7 +158,9 @@ sf::Vector2f Boid::separation(QuadTree& quad) {
 
 
 
-void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, sf::Time& dt){
+void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, long dt){
+	dt /= 1000;
+
 	//init
 	acceleration.x = 0;
 	acceleration.y = 0;
@@ -200,6 +202,6 @@ void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, sf::Time& dt){
 	vel.y += acceleration.y / 150;
 	vel = normalize(vel);
 
-	position.x += vel.x * speed * dt.asMilliseconds() / 1000;
-	position.y += vel.y * speed * dt.asMilliseconds() / 1000;
+	position.x += vel.x * speed * dt / 1000;
+	position.y += vel.y * speed * dt / 1000;
 }

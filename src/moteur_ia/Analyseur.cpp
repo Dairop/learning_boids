@@ -192,7 +192,9 @@ void comportementsScores(ReseauNeurones& r, int parametre){
     vecRepro = moyenneMobile(vecRepro, 10);
     
 
-    enregistrerEnSvg4Vecteurs1Graphe("score de chaque choix en fonction de la "+axeX, vecPartage, vecRepro, vecCombat, vecIgnore, axeX, "frequence", "Bleu: Partage | Violet: Reproduction | Rouge: Combat | Vert: Ignorer", valMax);
+    std::string fileName = "scores en fonction de "+axeX;
+
+    enregistrerEnSvg4Vecteurs1Graphe(fileName, vecPartage, vecRepro, vecCombat, vecIgnore, axeX, "frequence", "Bleu: Partage | Violet: Reproduction | Rouge: Combat | Vert: Ignorer", valMax);
 }
 
 
@@ -338,8 +340,9 @@ void comportementFavori(ReseauNeurones& r, int parametre){
     vecRepro = moyenneMobile(vecRepro, precision/400.0f*10);
     
 
-    enregistrerEnSvg4Vecteurs1Graphe("Choix en fonction de "+axeX, vecPartage, vecRepro, vecCombat, vecIgnore, axeX, "frequence", "Bleu: Partage | Violet: Reproduction | Rouge: Combat | Vert: Ignorer", valMax);
+    std::string fileName = "Choix en fonction de " + axeX;
 
+    enregistrerEnSvg4Vecteurs1Graphe(fileName, vecPartage, vecRepro, vecCombat, vecIgnore, axeX, "frequence", "Bleu: Partage | Violet: Reproduction | Rouge: Combat | Vert: Ignorer", valMax);
 }
 
 
@@ -364,7 +367,9 @@ void testVariablesLiees(ReseauNeurones& r, short int v1, short int v2, short int
     */
 
     std::string nomX, nomY, nomSortie;
-    std::string listeNoms[] = {"age1", "age2", "nourriture1", "nourriture2", "distance genetique"};
+    //age1, age2, nourriture1, nourriture2, distance génétique 
+    // (abbréviation à cause des limites de taille de nom des fichiers sur windows)
+    std::string listeNoms[] = {"age1", "age2", "nourriture1", "nourriture2", "distance génétique"};
     nomX = listeNoms[v1];
     nomY = listeNoms[v2];
 
@@ -427,7 +432,13 @@ void testVariablesLiees(ReseauNeurones& r, short int v1, short int v2, short int
 
 
 
-    creerGrapheFrequence2Parametres("lien entre deux variables: "+ nomX + " " + nomY + " -> " + nomSortie, nomX, nomY, data, nbDivisions, nbDivisions, couleurGraphe, "lien entre deux variables: "+nomX+" et "+nomY+" sur le comportement: " + nomSortie);
+    //too long for windows files
+    /*"lien entre deux variables "+ nomX + " " + nomY + " -> " + nomSortie*/
+    std::string fileName = "";
+    fileName = nomX.substr(0, 4) + nomX.back() + " " + nomY.substr(0, 4) + nomY.back() + " effect on " + nomSortie.substr(0, 5);
+
+
+    creerGrapheFrequence2Parametres(fileName, nomX, nomY, data, nbDivisions, nbDivisions, couleurGraphe, "lien entre deux variables: "+nomX+" et "+nomY+" sur le comportement: " + nomSortie);
 }
 
 

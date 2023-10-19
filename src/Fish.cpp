@@ -80,7 +80,7 @@ void Fish::updateBody() {
 
 
 
-void Fish::updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt) {
+void Fish::updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, long dt) {
 	update(screenSize, boidsQuad, dt);
 
 	rectByCenter r;

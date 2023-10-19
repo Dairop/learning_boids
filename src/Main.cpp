@@ -99,6 +99,7 @@ int main() {
 	std::vector<Fish> *boidsV = new std::vector<Fish>;
 	for (int i = 0; i < numberOfBoids; i++) {
 		Fish mt(sf::Vector2f((i * 23) % windowWidth, ((i + 31) * 63) % windowHeight)); //new one each time, so they get a new orientation & pos
+		mt.age = rand() % 100;
 		boidsV->push_back(mt);
 	}
 
@@ -171,8 +172,9 @@ int main() {
 
 		//update position of boids if the simulation isn't paused
 		if (!pause) {
+			long dtInMicroS = std::fmin(dt.asMicroseconds(), 30000);
 			//update boids position
-			moteur.update((*boidsQuad), (*foodQuad), dt);
+			moteur.update((*boidsQuad), (*foodQuad), dtInMicroS);
 		}
 
 		//display the boids all at once
@@ -182,7 +184,7 @@ int main() {
 		//window.draw(water);
 		
 		//FPS
-		std::cout << 1000/(dt.asMilliseconds()+1) << "\n";
+		//std::cout << 1000/(dt.asMilliseconds()+1) << "\n";
 		dt = deltaClock.restart();
 	
 

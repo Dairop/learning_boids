@@ -23,7 +23,7 @@ public:
 	}
 
 	virtual void draw(sf::VertexArray& va, int start);
-	void update(sf::Vector2u screenSize, QuadTree& boidsQuad, sf::Time& dt);
+	void update(sf::Vector2u screenSize, QuadTree& boidsQuad, long dt);
 
 	sf::Vector2f cohesion(QuadTree& quad);
 	sf::Vector2f alignment(QuadTree& quad);

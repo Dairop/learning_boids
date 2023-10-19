@@ -6,7 +6,7 @@ const float SPEED = 5.0f; // penser à changer l'apport de nourriture après mod
 unsigned int nbMinNoisettesParFrame;
 unsigned int nbMaxNoisettesParFrame;
 
-unsigned long int tempsDepuisDebut = 0;
+unsigned long long int tempsDepuisDebut = 0;
 
 
 void Moteur::init(sf::Vector2u szEnv){
@@ -65,9 +65,8 @@ void Moteur::ajouterEcureuil(){
 
 
 
-void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
-    tempsDepuisDebut++;
-
+void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
+    tempsDepuisDebut += dt/1000;
 
     //crée des cycles d'abondance de nourriture et de manques
     //https://www.desmos.com/calculator/ezsdetdjqi 
@@ -77,8 +76,6 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
 
 
     if (tempsDepuisDebut%1000 == 0){
-        std::cout << "\nsaving data" << std::endl;
-
         //données pour l'analyse
         this->cyclesNourriture.push_back(nbNoisettesParFrameCycles);
         this->population.push_back(ecureuils.size());
@@ -88,8 +85,6 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
 
         //générer les graphes d'analyse
         if (tempsDepuisDebut%1000 == 0){
-            std::cout << "\ncreating graphs" << std::endl;
-
             this->genererFichiersAnalyseGlobale();
         }
     }
@@ -111,15 +106,15 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     }
 
 
-    float timeElapsed = dt.asMicroseconds();
+    float timeElapsed = dt;
     //maj de tous les ecureuils
     for (Fish& e: ecureuils) {
         e.updateFish(sizeEnv, boidsQuad, foodQuad, dt);
         e.updateBody();
 
-        e.foodReserves -= timeElapsed/200000.0f;
-        e.age += timeElapsed / 500000.0f;
-        e.timerInteraction -= timeElapsed/10000.0f;
+        e.foodReserves -= timeElapsed/300000.0f;
+        e.age += timeElapsed / 800000.0f;
+        e.timerInteraction -= timeElapsed/1000.0f;
         if (e.foodReserves < 0 || e.age > 100) e.isAlive = false;
     }
 
@@ -142,18 +137,18 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     }
 
     //ajouter des ecureuils aléatoires s'ils disparaissent
-    if (ecureuils.size() < 100){
+    if (ecureuils.size() < 50){
         //parfois la simulation reste bloquée et aucun agent n'arrive à prendre le dessus, dans ce cas on recommence la simulation
-        if (tempsDepuisDebut > 1000) {
+        if (tempsDepuisDebut > 100000) {
             this->init(sizeEnv);
             return;
         }
 
-        for (unsigned int i = 0; i < 85; i++){
+        for (unsigned int i = 0; ecureuils.size() < 85; i++){
             ajouterEcureuil();
         }
 
-        for (unsigned int i = 0; noisettes.size() < 750; i++){
+        for (unsigned int i = 0; noisettes.size() < 1000; i++){
             ajouterNoisette();
         }
     }
@@ -163,7 +158,7 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     for (unsigned int a = 0; a < ecureuils.size(); a++){
         rectByCenter r;
         r.center = ecureuils[a].position;
-        r.radius = sf::Vector2f(ecureuils[a].size*2.5, ecureuils[a].size*2.5);
+        r.radius = sf::Vector2f(ecureuils[a].size*2.7, ecureuils[a].size*2.7);
 
         std::vector<Entity*> neighbors;
         boidsQuad.queryRangeCircle(r, neighbors);
@@ -215,14 +210,14 @@ void entreesReseau(std::vector<float>& v1, Fish& e1, Fish& e2){
 void Moteur::reproduire(Fish& e1, Fish& e2){
     //on utilise des pointeurs car on ne peut pas faire de redéfinition dans un switch case 
     Fish e = Fish(mult(add(e1.position, e2.position), 0.5f));
-    sf::Color hsvC; // couleur de l'écureuil parent
+    sf::Color parentColor; // couleur de l'écureuil parent
     
     if (rand()%2){ 
         e.NN.copier(e1.NN);
-        hsvC = RGBtoHSV(e1.color.r, e1.color.g, e1.color.b);
+        parentColor = e1.color;
     } else {
         e.NN.copier(e2.NN);
-        hsvC = RGBtoHSV(e2.color.r, e2.color.g, e2.color.b);
+        parentColor = e2.color;
     }
 
     //taux de mutation
@@ -234,14 +229,7 @@ void Moteur::reproduire(Fish& e1, Fish& e2){
     else if (mut < 50){   e.NN.modifierAleatoirement(0.0005f); }
     else {               e.NN.modifierAleatoirement(0.0f); }
 
-
-    // on modifie la valeur HSV de l'écureuil afin qu'il n'ait pas exactement la même que son parent
-    /* utile si les espèces sont desativées
-    float newHue = fmod(hsvC.x+((float) (rand()%100-49.5)/10.0f)+360.0f, 360.0f);
-    e.couleur = HSVtoRGB(newHue, hsvC.y, hsvC.z);
-    */
-
-
+    e.color = parentColor;
     ecureuils.push_back(e);
 
     //chaque ecureuil perd 15 de nourriture

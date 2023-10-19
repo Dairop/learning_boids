@@ -19,24 +19,6 @@ bool collideRectAndRect(rectByCenter rect1, rectByCenter rect2) {
 }
 
 
-bool collideRectAndRectOnThorus(rectByCenter rect1, rectByCenter rect2, sf::Vector2f envSize) {
-    float dx = std::abs(rect2.center.x - rect1.center.x);
-    float dy = std::abs(rect2.center.y - rect1.center.y);
-
-    //looping
-    if (dx > envSize.x / 2.0f)
-        dx = envSize.x - dx;
-
-    if (dy > envSize.y / 2.0f)
-        dy = envSize.y - dy;
-
-    //check if dx < total-radius in x and same in y
-    return (dx <= rect1.radius.x + rect2.radius.x && dy <= rect1.radius.y + rect2.radius.y);
-}
-
-
-
-
 
 void QuadTree::del() {
     points.clear();
@@ -99,7 +81,7 @@ bool QuadTree::insert(Entity* p) {
 
     // Insérer un point dans le QuadTree
     // Ignorer les objets qui n'appartiennent pas a ce quadtree
-    if ((abs(boundary.center.x - p->position.x) >= boundary.radius.x) || (abs(boundary.center.y - p->position.y) >= boundary.radius.y)) {
+    if ((abs(boundary.center.x - p->position.x) > boundary.radius.x) || (abs(boundary.center.y - p->position.y) > boundary.radius.y)) {
         return false; // l'objet ne doit pas être ajoute
     }
 

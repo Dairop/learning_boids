@@ -31,7 +31,7 @@ public:
 	void updateBody();
 	void draw(sf::VertexArray& va, int start) override;
 	void init();
-	void updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt);
+	void updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, long dt);
 
 	Fish(sf::Vector2f pos) : Boid(pos) {
 		isAlive = true;

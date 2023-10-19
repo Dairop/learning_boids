@@ -8,7 +8,7 @@ const unsigned int NB_ESPECES_TOP = 15; // nombre d'espèces sauvegardées dans 
 const int DIVERSITE_GENETIQUE_UNE_ESPECE = 75.0f;
 
 unsigned int tempsDepuisAnalyse = 0;
-const unsigned int analyserTousLes = 10000;
+const unsigned int analyserTousLes = 1000;
 
 unsigned int prevAnalyse = 0; // afin de ne pas analyser 2x le même réseau de neurones 
 
@@ -57,6 +57,7 @@ void majVecteurEspeces(std::vector<Espece>& especes, const std::vector<Fish>& ec
     }
 
     tempsDepuisAnalyse++;
+    std::cout << "Analyse globale dans: " << tempsDepuisAnalyse << "/" << analyserTousLes;
 
     if (tempsDepuisAnalyse%10 == 0){
         majTop(especes);
