@@ -120,7 +120,7 @@ sf::Vector2f Boid::separation(QuadTree& quad) {
 	std::vector<Entity*> nearbyPoints;
 	rectByCenter range;
 	range.center = position;
-	range.radius = sf::Vector2f(this->size * 2.7, this->size * 2.7);
+	range.radius = sf::Vector2f(this->size * 2.0, this->size * 2.0);
 	quad.queryRangeCircle(range, nearbyPoints);
 
 	sf::Vector2f diff;

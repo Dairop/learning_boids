@@ -11,9 +11,6 @@ void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurG
     
     std::ofstream file;
     file.open(final_path, std::fstream::trunc);
-    std::cout << "Current Directory: " + final_path << std::endl;
-    std::cout << "Final Path: " << final_path << std::endl;
-
 
     if (file.is_open()) {
         float largeurSvg = largeurGraphe + 250.0f;
@@ -94,7 +91,7 @@ void enregisterEnSvg(std::string titre, std::vector<float>& data, float largeurG
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier "+ final_path << std::endl;
     }
 }
 
@@ -115,10 +112,7 @@ void enregistrerEnSvg4Vecteurs1Graphe( std::string titre,
     std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
 
     std::ofstream file;
-    file.open(final_path, std::fstream::app);
-    file.clear();
-    std::cout << "Current Directory: " + final_path << std::endl;
-    std::cout << "Final Path: " << final_path << std::endl;
+    file.open(final_path, std::fstream::trunc);
 
     if (file.is_open()) {
         float largeurSvg = 700.0f;
@@ -197,7 +191,7 @@ void enregistrerEnSvg4Vecteurs1Graphe( std::string titre,
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier "+ final_path << std::endl;
     }
 
 }
@@ -219,9 +213,7 @@ void creerGrapheFrequence2Parametres(std::string titre, std::string axeX, std::s
     std::string final_path = current_directory + "/../../../data/" + titre + ".svg";
 
     std::ofstream file;
-    file.open(final_path, std::fstream::app);
-    std::cout << "Current Directory: " + final_path << std::endl;
-    std::cout << "Final Path: " << final_path << std::endl;
+    file.open(final_path, std::fstream::trunc);
 
     if (file.is_open()) {
         float largeurSvg = 700.0f;
@@ -303,7 +295,7 @@ void creerGrapheFrequence2Parametres(std::string titre, std::string axeX, std::s
         // close the file
         file.close();
     } else {
-        std::cout << "Impossible d'ouvrir le fichier ../../data/"+titre+".svg" << std::endl;
+        std::cout << "Impossible d'ouvrir le fichier "+final_path << std::endl;
     }
 
 

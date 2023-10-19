@@ -12,8 +12,8 @@ unsigned long int tempsDepuisDebut = 0;
 void Moteur::init(sf::Vector2u szEnv){
     this->sizeEnv = szEnv;
 
-    nbMinNoisettesParFrame = 2;
-    nbMaxNoisettesParFrame = 4;
+    nbMinNoisettesParFrame = 3;
+    nbMaxNoisettesParFrame = 5;
 
     especes.clear();
 
@@ -163,17 +163,19 @@ void Moteur::update(QuadTree& boidsQuad, QuadTree& foodQuad, sf::Time& dt){
     for (unsigned int a = 0; a < ecureuils.size(); a++){
         rectByCenter r;
         r.center = ecureuils[a].position;
-        r.radius = sf::Vector2f(ecureuils[a].size*2, ecureuils[a].size*2);
+        r.radius = sf::Vector2f(ecureuils[a].size*2.5, ecureuils[a].size*2.5);
 
         std::vector<Entity*> neighbors;
-        foodQuad.queryRangeCircle(r, neighbors);
+        boidsQuad.queryRangeCircle(r, neighbors);
 
-        for (unsigned int b; b < neighbors.size(); b++) {
-            if (ecureuils[a].timerInteraction <= 0.0f && ecureuils[b].timerInteraction <= 0.0f) {
+        for (unsigned int b = 0; b < neighbors.size(); b++) {
+            if (ecureuils[a].timerInteraction <= 0.0f && ecureuils[b].timerInteraction <= 0.0f && ecureuils[b].isAlive) {
                 uneInteraction(ecureuils[a], ecureuils[b]);
 
                 ecureuils[a].timerInteraction = ecureuils[a].maxTimerInteraction;
                 ecureuils[b].timerInteraction = ecureuils[b].maxTimerInteraction;
+
+                nbInteractions100Frames++;
             }
         }
     }

@@ -75,7 +75,7 @@ int main() {
 	int windowWidth = 1920;
 	int windowHeight = 1080;
 
-	int numberOfBoids = 200;
+	int numberOfBoids = 600;
 
 	sf::Texture backgroundRocksTexture;
 	backgroundRocksTexture.loadFromFile("img/rocks.png");

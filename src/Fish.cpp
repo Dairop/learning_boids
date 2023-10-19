@@ -14,8 +14,9 @@ void Fish::init() {
 	foodReserves = 30.0f;
 	age = 0;
 
-	timerInteraction = 0;
-	maxTimerInteraction = 100;
+
+	maxTimerInteraction = 40.0f;
+	timerInteraction = std::fmod(rand(), maxTimerInteraction);
 	//std::cout << std::to_string(colors[0].r) + " " + std::to_string(colors[0].g) + " " + std::to_string(colors[0].b) << " ;";
 }
 
