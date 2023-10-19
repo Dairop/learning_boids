@@ -7,7 +7,7 @@
 #include <chrono>
 #include "../Utils.hpp"
 
-bool pointInFrame(sf::Vector2f v, sf::IntRect r, float radius = 0);
+//define function that are only common to the folder "boids" here
 
 #include "Boid.hpp"
 #include "QuadTree.hpp"

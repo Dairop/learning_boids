@@ -8,28 +8,43 @@ struct Entity;
 class QuadTree
 {
 public:
-	// Constante arbitraire indiquant combien d'éléments peuvent être stockés dans ce nœud de quadtree
+	// Arbitrary constant indicating how many elements can be stored in this quadtree node
 	const int QT_NODE_CAPACITY = 20;
 
-	// Zone de délimitation alignée sur l'axe (représentée par sa demi-dimension et son centre)
-	// représentant les limites de ce quadtree
+	// Axis-aligned bounding box (represented by its half-dimension and center)
+	// representing the boundaries of this quadtree node
 	rectByCenter boundary;
 
-	// Points de ce nœud de quadtree
-	std::vector <Entity*> points;
+	// Points contained in this quadtree node
+	std::vector<Entity*> points;
 
 
-	// Méthodes
+
+	// Constructor initializing the boundary of the quadtree node
 	QuadTree(rectByCenter bd) { boundary = bd; northWest = nullptr; northEast = nullptr; southEast = nullptr; southWest = nullptr; };
-	bool insert(Entity* p);
-	void subdivide(); // créer quatre enfants permettant de diviser ce quadrant en quatre quadrants d'égales dimensions
-	void queryRangeRect(rectByCenter range, std::vector<Entity*> & pointsInRange);
-	void queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange);
-	void display(sf::RenderWindow&);
-	void getAllParticles(std::vector<Entity*>& particles);
-	void del();  // delete the QuadTree from the actual pos. to the leafs
 
-	// Enfants
+	// Inserts an entity into the quadtree
+	bool insert(Entity* p);
+
+	// Subdivides the quadrant into four equal-sized quadrants
+	void subdivide();
+
+	// Retrieves entities within a rectangular range and appends them to 'pointsInRange'
+	void queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsInRange);
+
+	// Retrieves entities within a circular range and appends them to 'pointsInRange'
+	void queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange);
+
+	// Displays the quadtree nodes on a SFML window
+	void display(sf::RenderWindow&);
+
+	// Retrieves all particles in the quadtree
+	void getAllParticles(std::vector<Entity*>& particles);
+
+	// Deletes the quadtree node recursively from the current position to the leaf nodes
+	void del();
+
+	// Children of the quadtree node
 	QuadTree* northWest;
 	QuadTree* northEast;
 	QuadTree* southWest;

@@ -1,7 +1,7 @@
 #include "QuadTree.hpp"
 
 
-bool collideRectAndRect(rectByCenter rect1, rectByCenter rect2) {
+static bool collideRectAndRect(rectByCenter rect1, rectByCenter rect2) {
     float tlx1 = rect1.center.x - rect1.radius.x;
     float tly1 = rect1.center.y - rect1.radius.y;
     float brx1 = rect1.center.x + rect1.radius.x;
@@ -22,28 +22,31 @@ bool collideRectAndRect(rectByCenter rect1, rectByCenter rect2) {
 
 void QuadTree::del() {
     points.clear();
+
+    //if the childs are defined, then apply the function recursively
     if (northWest != nullptr) {
         northWest->del();
         northEast->del();
         southEast->del();
         southWest->del();
     }
+
     delete northWest;
     delete northEast;
     delete southEast;
     delete southWest;
-
 
     northWest = nullptr;
     northEast = nullptr;
     southEast = nullptr;
     southWest = nullptr;
 
-
     return;
 }
 
+
 void QuadTree::getAllParticles(std::vector<Entity*>& particles) {
+    // Call reculrsively to gather the particles from the children
     if (northWest != nullptr) {
         northWest->getAllParticles(particles);
         northEast->getAllParticles(particles);
@@ -51,12 +54,13 @@ void QuadTree::getAllParticles(std::vector<Entity*>& particles) {
         southEast->getAllParticles(particles);
     }
     else {
+        // If there are no children, then add our own particles
         particles.insert(particles.end(), points.begin(), points.end());
     }
 }
 
 void QuadTree::subdivide() {
-    //subdivide the previous rect in 4 equal parts
+    // Subdivide the previous rect in 4 equal parts
     rectByCenter r;
     r.radius = mult(boundary.radius, 0.5);
     r.center.x = boundary.center.x - boundary.radius.x / 2;
@@ -76,26 +80,30 @@ void QuadTree::subdivide() {
     southWest = new QuadTree(r);
 };
 
+
+
+
 bool QuadTree::insert(Entity* p) {
+    // If the position of the entity is NaN, ignore it
     if (isnan(p->position.x)) return false;
 
-    // Insérer un point dans le QuadTree
-    // Ignorer les objets qui n'appartiennent pas a ce quadtree
+    // Insert a point into the QuadTree
+    // Ignore objects that do not belong to this quadtree
     if ((abs(boundary.center.x - p->position.x) > boundary.radius.x) || (abs(boundary.center.y - p->position.y) > boundary.radius.y)) {
-        return false; // l'objet ne doit pas être ajoute
+        return false; // Object should not be added
     }
 
-    // S'il reste de la place dans ce quadtree, y ajouter l'objet
+    // If there is still space in this quadtree, add the object here
     if (points.size() < QT_NODE_CAPACITY && northWest == nullptr) {
         points.push_back(p);
         return true;
     }
 
-    // Sinon, subdiviser le quadtree, puis ajouter le point au nœud qui l'acceptera
+    // Otherwise, subdivide the quadtree and add the point to the node that will accept it
     if (northWest == nullptr) {
         subdivide();
 
-        //distribute the points to the childs
+        // Distribute the points to the child nodes
         for (int pointMoved = 0; pointMoved < points.size(); pointMoved++) {
             if (northWest->insert(points[pointMoved])) continue;
             else if (northEast->insert(points[pointMoved])) continue;
@@ -106,22 +114,27 @@ bool QuadTree::insert(Entity* p) {
         points.clear();
     }
 
+    // Try to insert the point into the child nodes
     if (northWest->insert(p)) { return true; }
     if (northEast->insert(p)) { return true; }
     if (southWest->insert(p)) { return true; }
     if (southEast->insert(p)) { return true; }
 
-    // Sinon, le point ne peut etre insere, pour une raison inconnue (cela ne devrait jamais arriver)
+    //If the point cannot be inserted for an unknown reason (should never happen)
     return false;
 }
 
+
+
+
+
 void QuadTree::queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsInRange) {
-    // skip if the quadtree isn't concerned
+    // Skip if the quadtree isn't concerned
     if (!collideRectAndRect(range, boundary)) {
         return;
     }
 
-    //if no child, return the node points
+    // If there are no children, return the node points
     if (northWest == nullptr) {
         for (int p = 0; p < points.size(); p++) {
             if ((abs(points.at(p)->position.x - range.center.x) < range.radius.x) &&
@@ -132,7 +145,7 @@ void QuadTree::queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsIn
         return;
     }
 
-    // if it have childs, ask them
+    // If there are children, ask them
     northWest->queryRangeRect(range, pointsInRange);
     northEast->queryRangeRect(range, pointsInRange);
     southEast->queryRangeRect(range, pointsInRange);
@@ -140,19 +153,22 @@ void QuadTree::queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsIn
     return;
 }
 
+
+
+// Similar to queryRangeRect but we are prunning the result a little more
 void QuadTree::queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange) {
-    // skip if the quadtree isn't concerned
+    // Skip if the quadtree isn't concerned
     if (!collideRectAndRect(range, boundary)) {
         return;
     }
 
-    //if no child, return the node points
+    // If there are children, return the node points
     if (northWest == nullptr) {
         for (int p = 0; p < points.size(); p++) {
             if ((abs(points.at(p)->position.x - range.center.x) < range.radius.x) &&
                 (abs(points.at(p)->position.y - range.center.y) < range.radius.y)) {
 
-                //in rect, check if in circle
+                // In rect, then check if in circle
                 if (dist2(points[p]->position, range.center) < range.radius.x * range.radius.x + range.radius.y * range.radius.y) {
                     pointsInRange.push_back(points.at(p));
                 }
@@ -161,7 +177,7 @@ void QuadTree::queryRangeCircle(rectByCenter range, std::vector<Entity*>& points
         return;
     }
 
-    // if it have childs, ask them
+    // If there are children, ask them
     northWest->queryRangeCircle(range, pointsInRange);
     northEast->queryRangeCircle(range, pointsInRange);
     southEast->queryRangeCircle(range, pointsInRange);
