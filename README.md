@@ -20,4 +20,4 @@ Detailed explanation on the [cmake ](https://preshing.com/20170511/how-to-build-
   
 - All the graphs are created in the "data" folder
   - 3 of them are updated frequently (population, food cycles & interactions)
-  -  48 others are updated 250x less frequently (because they take a lot of time to make)
+  -  48 others are updated 250x less frequently (because they take a lot of time to generate)
