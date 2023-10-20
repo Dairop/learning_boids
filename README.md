@@ -1,7 +1,7 @@
 # learning_boids
 
 Boids, represented as fish, form different species that evolve and lean how to behave thanks to natural selection.
-The resulting neural network are analyzed after some time learning and used to generate various graphs.
+The resulting neural networks are analyzed after some time, we then generate graphs to understand their behavior better.
 
 ## Prerequisite
 - C++ 20
