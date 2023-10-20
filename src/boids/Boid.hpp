@@ -1,6 +1,6 @@
 #pragma once
-#include "commons.hpp"
-#include "../moteur_ia/ReseauNeurones.hpp"
+#include "Commons.hpp"
+#include "../AI_Engine/NeuralNetwork.hpp"
 #include "Entity.hpp"
 
 class QuadTree;

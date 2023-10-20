@@ -10,8 +10,6 @@
 
 #include <SFML/Graphics.hpp>
 
-extern float tailleEnvironnement;
-
 
 struct rectByCenter {
     sf::Vector2f center;
@@ -61,4 +59,4 @@ std::string rgbToHex(int r, int g, int b);
 
 //calcul de l amoyenne mobile d'une liste de valeurs, permet d'avoir des 
 //graphes moins aléatoires (attention, on risque de perdre aussi des données en augmentant n)
-std::vector<float> moyenneMobile(const std::vector<float>& vals, unsigned int n);
+std::vector<float> movingAverage(const std::vector<float>& vals, unsigned int n);

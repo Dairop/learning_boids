@@ -1,9 +1,9 @@
 #include "../Utils.hpp"
 
-struct Neurone {
-    float valeur;
-    float biais;
-    short int fonctionActivation = 4; /* indice de la fonction d'activation parmi une liste donnée
+struct Neuron {
+    float value;
+    float bias;
+    short int activationFunction = 4; /* indice de la fonction d'activation parmi une liste donnée
                                         1: tangente hyperbolique   
                                         2: ReLU (Unité de Rectification Linéaire)     
                                         3: fonction Gaussienne
@@ -11,5 +11,5 @@ struct Neurone {
                                         5: fonction Leaky ReLU
                                         6: fonction linéaire
                                   */
-    void execFonctionActivation();
+    void execActivationFonction();
 };

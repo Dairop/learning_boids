@@ -1,5 +1,5 @@
-#ifndef COMMONS_HPP
-#define COMMONS_HPP
+#ifndef Commons_HPP
+#define Commons_HPP
 
 #include <SFML/Graphics.hpp>
 #include <iostream>

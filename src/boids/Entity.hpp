@@ -1,5 +1,5 @@
 #pragma once
-#include "commons.hpp"
+#include "Commons.hpp"
 
 struct Entity {
 	sf::Vector2f position;

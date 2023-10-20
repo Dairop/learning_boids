@@ -6,7 +6,7 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#include "commons.hpp"
+#include "Commons.hpp"
 #endif
 
 

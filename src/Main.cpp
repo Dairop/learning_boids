@@ -1,5 +1,5 @@
-#include "boids/commons.hpp"
-#include "moteur_ia/moteur.hpp"
+#include "boids/Commons.hpp"
+#include "AI_Engine/Engine.hpp"
 
 
 #include <filesystem>
@@ -103,9 +103,9 @@ int main() {
 		boidsV->push_back(mt);
 	}
 
-	//creation of the ai' engine
-	Moteur moteur((*boidsV), (*food));
-	moteur.init(sf::Vector2u(windowWidth, windowHeight));
+	//creation of the ai's engine
+	Engine Engine((*boidsV), (*food));
+	Engine.init(sf::Vector2u(windowWidth, windowHeight));
 
 
 	//creation of the timer to calculate dt beween each update and the FPS
@@ -174,7 +174,7 @@ int main() {
 		if (!pause) {
 			long dtInMicroS = std::fmin(dt.asMicroseconds(), 30000);
 			//update boids position
-			moteur.update((*boidsQuad), (*foodQuad), dtInMicroS);
+			Engine.update((*boidsQuad), (*foodQuad), dtInMicroS);
 		}
 
 		//display the boids all at once

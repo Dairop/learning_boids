@@ -14,8 +14,8 @@ public:
 	float nodeLen = fishLenght / bodyLen;
 
 
-	unsigned int idEspece = 0;
-	ReseauNeurones NN;
+	unsigned int speciesId = 0;
+	NeuralNetwork NN;
 	sf::Color color;
 
 	float age;

@@ -248,7 +248,7 @@ std::string rgbToHex(int r, int g, int b) {
 
 
 
-std::vector<float> moyenneMobile(const std::vector<float>& vals, unsigned int n){
+std::vector<float> movingAverage(const std::vector<float>& vals, unsigned int n){
     std::vector<float> calc;
     if (n > vals.size()) return calc;
 
