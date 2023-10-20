@@ -8,7 +8,7 @@ The resulting neural network are analyzed after some time learning and used to g
 - Have CMake installed
 
 ## Compilation
-#### Only tested on Windows with Visual Studio for the moment 
+### Only tested on Windows with Visual Studio for the moment 
 Detailed explanation on the [cmake ](https://preshing.com/20170511/how-to-build-a-cmake-based-project/ "cmake website")
 
 
