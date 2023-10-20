@@ -14,8 +14,8 @@ public:
 	float nodeLen = fishLenght / bodyLen;
 
 
-	unsigned int idEspece = 0;
-	ReseauNeurones NN;
+	unsigned int speciesId = 0;
+	NeuralNetwork NN;
 	sf::Color color;
 
 	float age;
@@ -23,13 +23,13 @@ public:
 
 	//one entity have to wait some time after interacting with another one in order for them to 
 	// get away from one another and endure the result of the previous one
-	unsigned int timerInteraction;
-	unsigned int maxTimerInteraction;
+	float timerInteraction;
+	float maxTimerInteraction;
 
 
 
 	void updateBody();
-	void draw(sf::VertexArray& va, int start) override;
+	void draw(sf::VertexArray& va, const int start) override;
 	void init();
 	void updateFish(sf::Vector2u screenSize, QuadTree& boidsQuad, QuadTree& foodQuad, long dt);
 

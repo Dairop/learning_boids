@@ -6,12 +6,12 @@
 #include <vector>
 #include <SFML/Graphics.hpp>
 
-#include "commons.hpp"
+#include "Commons.hpp"
 #endif
 
 
 
-void Boid::draw(sf::VertexArray& va, int start) {
+void Boid::draw(sf::VertexArray& va, const int start) {
 	const float texture_size = 1024.0f; //size of the circle.png texture in the img folder
 	unsigned int idx; //start position in the VertexArray
 	int rad; //radius of the Boid
@@ -47,7 +47,7 @@ void Boid::draw(sf::VertexArray& va, int start) {
 }
 
 
-sf::Vector2f Boid::alignment(QuadTree& quad) {
+sf::Vector2f Boid::alignment(const QuadTree& quad) {
 	std::vector<Entity*> nearbyPoints;
 
 	//define the range of the query to the QuadTree to find the neighbors of the Boid
@@ -61,10 +61,10 @@ sf::Vector2f Boid::alignment(QuadTree& quad) {
 	//if there are any neighbor
 	if (nearbyPoints.size() > 0) {
 		for (int p = 0; p < nearbyPoints.size(); p++) {
-			Boid* boidPtr = static_cast<Boid*>(nearbyPoints[p]); // convert the Entity back to a point, 
+			Boid* boidPtr = static_cast<Boid*>(nearbyPoints[p]); // convert the Entity back to a Boid, 
 			//should return an error if something else than a Boid's Entity is in the QuadTree
 
-			steering.x += boidPtr ->vel.x;
+			steering.x += boidPtr->vel.x;
 			steering.y += boidPtr->vel.y;
 		}
 		steering.x /= nearbyPoints.size();
@@ -85,7 +85,7 @@ sf::Vector2f Boid::alignment(QuadTree& quad) {
 }
 
 
-sf::Vector2f Boid::cohesion(QuadTree& quad) {
+sf::Vector2f Boid::cohesion(const QuadTree& quad) {
 	std::vector<Entity*> nearbyPoints;
 
 	//define the range of the query to the QuadTree to find the neighbors of the Boid
@@ -129,7 +129,7 @@ sf::Vector2f Boid::cohesion(QuadTree& quad) {
 
 }
 
-sf::Vector2f Boid::separation(QuadTree& quad) {
+sf::Vector2f Boid::separation(const QuadTree& quad) {
 	std::vector<Entity*> nearbyPoints;
 
 	//define the range of the query to the QuadTree to find the neighbors of the Boid
@@ -178,8 +178,8 @@ sf::Vector2f Boid::separation(QuadTree& quad) {
 
 
 
-void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, long dt){
-	dt /= 1000;
+void Boid::update(const sf::Vector2u screenSize, QuadTree& boidsQuad, const long dt_){
+	long dt = dt_ / 1000;
 
 	//init
 	acceleration.x = 0;
@@ -232,6 +232,6 @@ void Boid::update(sf::Vector2u screenSize, QuadTree& boidsQuad, long dt){
 	vel = normalize(vel);
 
 	//add velocity (speed orientation) * speed * delta time to the position
-	position.x += vel.x * speed * dt / 1000;
-	position.y += vel.y * speed * dt / 1000;
+	position.x += vel.x * speed * dt / 1000 * SIMULATION_SPEED;
+	position.y += vel.y * speed * dt / 1000 * SIMULATION_SPEED;
 }

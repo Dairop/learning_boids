@@ -1,13 +1,13 @@
-#include "boids/commons.hpp"
-#include "moteur_ia/moteur.hpp"
+#include "boids/Commons.hpp"
+#include "AI_Engine/Engine.hpp"
 
 
 #include <filesystem>
 
 //	create one big vertexArray with every body-parts of fishes and draw 
 //	them all at once to minimize the number of draw calls
-void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::vector<Entity>* food, sf::Texture& object_texture) {
-	int nbOfCircles = (boidsV->size() * boidsV->at(0).bodyLen << 2) + (food->size() << 2);
+void drawAllCircles(sf::RenderWindow& window, std::vector<Fish*>& fishesVector, std::vector<Entity*>& foodVector, sf::Texture& object_texture) {
+	int nbOfCircles = (fishesVector.size() * fishesVector[0]->bodyLen << 2) + (foodVector.size() << 2);
 
 	int nbOfCirclesDrawn = 0;
 
@@ -17,9 +17,9 @@ void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::ve
 	va.resize(nbOfCircles);
 
 	//push the verticies of the fishes
-	for (int i = 0; i < boidsV->size(); i++) {
-		boidsV->at(i).draw(va, nbOfCirclesDrawn<<2);
-		nbOfCirclesDrawn += boidsV->at(i).bodyLen;
+	for (int i = 0; i < fishesVector.size(); i++) {
+		fishesVector[i]->draw(va, nbOfCirclesDrawn << 2);
+		nbOfCirclesDrawn += fishesVector[i]->bodyLen;
 	}
 
 	
@@ -30,18 +30,18 @@ void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::ve
 	sf::Color algaeColor (151, 198, 50);
 	//sf::Color algaeColor(101, 138, 24);
 
-	for (int i = 0; i < food->size(); i++) {
-		va[idx + 0].position.x = food->at(i).position.x - rad;
-		va[idx + 0].position.y = food->at(i).position.y - rad;
+	for (int i = 0; i < foodVector.size(); i++) {
+		va[idx + 0].position.x = foodVector[i]->position.x - rad;
+		va[idx + 0].position.y = foodVector[i]->position.y - rad;
 
-		va[idx + 1].position.x = food->at(i).position.x + rad;
-		va[idx + 1].position.y = food->at(i).position.y - rad;
+		va[idx + 1].position.x = foodVector[i]->position.x + rad;
+		va[idx + 1].position.y = foodVector[i]->position.y - rad;
 
-		va[idx + 2].position.x = food->at(i).position.x + rad;
-		va[idx + 2].position.y = food->at(i).position.y + rad;
+		va[idx + 2].position.x = foodVector[i]->position.x + rad;
+		va[idx + 2].position.y = foodVector[i]->position.y + rad;
 
-		va[idx + 3].position.x = food->at(i).position.x - rad;
-		va[idx + 3].position.y = food->at(i).position.y + rad;
+		va[idx + 3].position.x = foodVector[i]->position.x - rad;
+		va[idx + 3].position.y = foodVector[i]->position.y + rad;
 
 		va[idx + 0].texCoords = { 0.0f        , 0.0f };
 		va[idx + 1].texCoords = { texture_size, 0.0f };
@@ -68,6 +68,7 @@ void drawAllCircles(sf::RenderWindow& window, std::vector<Fish>* boidsV, std::ve
 
 int main() {
 	bool pause = true;
+	const bool display = true;
 
 	std::srand(std::time(nullptr));
 
@@ -75,7 +76,7 @@ int main() {
 	int windowWidth = 1920;
 	int windowHeight = 1080;
 
-	int numberOfBoids = 600;
+	int numberOfBoids = 600/16;
 
 	sf::Texture backgroundRocksTexture;
 	backgroundRocksTexture.loadFromFile("img/rocks.png");
@@ -93,19 +94,14 @@ int main() {
 
 
 	//vector with the position of the foods
-	std::vector<Entity> *food = new std::vector<Entity>();
+	std::vector<Entity*> foodVector;
 
 	//vector with the fishes positions
-	std::vector<Fish> *boidsV = new std::vector<Fish>;
-	for (int i = 0; i < numberOfBoids; i++) {
-		Fish mt(sf::Vector2f((i * 23) % windowWidth, ((i + 31) * 63) % windowHeight)); //new one each time, so they get a new orientation & pos
-		mt.age = rand() % 100;
-		boidsV->push_back(mt);
-	}
+	std::vector<Fish*> fishesVector;
 
-	//creation of the ai' engine
-	Moteur moteur((*boidsV), (*food));
-	moteur.init(sf::Vector2u(windowWidth, windowHeight));
+	//creation of the ai's engine
+	Engine Engine(fishesVector, foodVector);
+	Engine.init(sf::Vector2u(windowWidth, windowHeight));
 
 
 	//creation of the timer to calculate dt beween each update and the FPS
@@ -157,28 +153,28 @@ int main() {
 
 		//update window
 		//window.clear(sf::Color(15, 80, 60));
-		window.draw(backgroundRocks);
+		if (display) window.draw(backgroundRocks);
 		//if (nbOfFramesDisplayed%5==0)window.draw(black);
 
 
 		//fill the quadtree
-		for (int b = 0; b < boidsV->size(); b++) {
-			boidsQuad->insert(&boidsV->at(b));
+		for (int b = 0; b < fishesVector.size(); b++) {
+			boidsQuad->insert(fishesVector[b]);
 		}
 		//fill the quadtree
-		for (int f = 0; f < food->size(); f++) {
-			foodQuad->insert(&food->at(f));
+		for (int f = 0; f < foodVector.size(); f++) {
+			foodQuad->insert(foodVector[f]);
 		}
 
 		//update position of boids if the simulation isn't paused
 		if (!pause) {
 			long dtInMicroS = std::fmin(dt.asMicroseconds(), 30000);
 			//update boids position
-			moteur.update((*boidsQuad), (*foodQuad), dtInMicroS);
+			Engine.update((*boidsQuad), (*foodQuad), dtInMicroS);
 		}
 
 		//display the boids all at once
-		drawAllCircles(window, boidsV, food, circleText);
+		if (display) drawAllCircles(window, fishesVector, foodVector, circleText);
 
 		//draw the layer on top of the boids
 		//window.draw(water);
@@ -194,8 +190,9 @@ int main() {
 		//delete the used quadtree (we will create a new one next frame)
 		boidsQuad->del();
 		foodQuad->del();
+		delete boidsQuad;
+		delete foodQuad;
 		
-		//delete bigQuad;
 		nbOfFramesDisplayed++;
 	}
 	

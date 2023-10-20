@@ -1,5 +1,5 @@
-#ifndef COMMONS_HPP
-#define COMMONS_HPP
+#ifndef Commons_HPP
+#define Commons_HPP
 
 #include <SFML/Graphics.hpp>
 #include <iostream>
@@ -11,6 +11,9 @@
 
 #include "Boid.hpp"
 #include "QuadTree.hpp"
+
+
+const float SIMULATION_SPEED = 1.0f; // Change the food cycles after changing the speed
 
 #endif
 

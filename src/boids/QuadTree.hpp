@@ -1,6 +1,6 @@
 #pragma once
 
-#include "commons.hpp"
+#include "Commons.hpp"
 
 #include "Entity.hpp"
 struct Entity;
@@ -21,7 +21,7 @@ public:
 
 
 	// Constructor initializing the boundary of the quadtree node
-	QuadTree(rectByCenter bd) { boundary = bd; northWest = nullptr; northEast = nullptr; southEast = nullptr; southWest = nullptr; };
+	QuadTree(const rectByCenter bd) { boundary = bd; northWest = nullptr; northEast = nullptr; southEast = nullptr; southWest = nullptr; };
 
 	// Inserts an entity into the quadtree
 	bool insert(Entity* p);
@@ -30,16 +30,16 @@ public:
 	void subdivide();
 
 	// Retrieves entities within a rectangular range and appends them to 'pointsInRange'
-	void queryRangeRect(rectByCenter range, std::vector<Entity*>& pointsInRange);
+	void queryRangeRect(const rectByCenter range, std::vector<Entity*>& pointsInRange) const;
 
 	// Retrieves entities within a circular range and appends them to 'pointsInRange'
-	void queryRangeCircle(rectByCenter range, std::vector<Entity*>& pointsInRange);
+	void queryRangeCircle(const rectByCenter range, std::vector<Entity*>& pointsInRange) const;
 
 	// Displays the quadtree nodes on a SFML window
 	void display(sf::RenderWindow&);
 
 	// Retrieves all particles in the quadtree
-	void getAllParticles(std::vector<Entity*>& particles);
+	void getAllParticles(std::vector<Entity*>& particles) const;
 
 	// Deletes the quadtree node recursively from the current position to the leaf nodes
 	void del();
