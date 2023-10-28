@@ -1,7 +1,7 @@
 #include "Engine.hpp"
 
 const float SPEED = 5.0f; // penser à changer l'apport de nourriture après modification de la vitesse
-
+ 
 //min et max des cycles de nourriture
 unsigned int minQttOfFoodPerFrame;
 unsigned int maxQttOfFoodPerFrame;
