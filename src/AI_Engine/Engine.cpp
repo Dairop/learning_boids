@@ -1,5 +1,7 @@
 #include "Engine.hpp"
 
+const float SPEED = 5.0f; // penser à changer l'apport de nourriture après modification de la vitesse
+ 
 //min et max des cycles de nourriture
 unsigned int minQttOfFoodPerFrame;
 unsigned int maxQttOfFoodPerFrame;
@@ -10,7 +12,7 @@ unsigned long long timeSinceStart = 0;
 void Engine::init(sf::Vector2u szEnv){
     this->sizeEnv = szEnv;
 
-    timeSinceStart = 0; //time since start in ms
+    timeSinceStart = 0;
     framesSinceSpeciesUpdate = 0;
     framesSinceStart = 0;
     nbInteractions100Frames = 0;
@@ -119,7 +121,7 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
         }
     }
 
-    if (this->framesSinceSpeciesUpdate >= 100) {
+    if (this->framesSinceSpeciesUpdate >= 500) {
         std::cout << "\nupdating species" << std::endl;
         updateSpecies();
         this->framesSinceSpeciesUpdate = 0;
@@ -241,21 +243,10 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
             delete food[i];
             food.erase(food.begin() + i);
         }
-    }    
+    }
 
     preventDyingSimulations();
-}
-
-
-
-
-
-void Engine::updateSpecies(){
-    updateSpeciesVector(species, fishes);
-    updateEntitiesSpecies(species, fishes);
-}
-
-
+        }
 
 
 
@@ -268,7 +259,7 @@ void Engine::preventDyingSimulations() {
         if (timeSinceStart > 10000) {
             this->init(sizeEnv);
             return;
-        }
+            }
 
         for (unsigned int i = 0; fishes.size() < 100; i++) {
             addFish();
@@ -277,6 +268,13 @@ void Engine::preventDyingSimulations() {
 }
 
 
+
+
+
+void Engine::updateSpecies(){
+    updateSpeciesVector(species, fishes);
+    updateEntitiesSpecies(species, fishes);
+}
 
 
 
@@ -311,36 +309,34 @@ void Engine::reproduce(Fish* e1, Fish* e2){
 
     Fish* e = new Fish(mult(add(e1->position, e2->position), 0.5f));
 
-    sf::Color parentColor; //color of the parent fish
-    
-    if (rand()%2){ 
+    sf::Color parentColor;
+
+    if (rand() % 2) {
         e->NN.copy_NN(e1->NN);
         parentColor = e1->color;
-    } else {
+    }
+    else {
         e->NN.copy_NN(e2->NN);
         parentColor = e2->color;
     }
 
     // Mutation rate
-    float mut = rand()%100;
+    float mut = rand() % 100;
 
     // Change randomly "mut"*100% of the neural network in order to apply mutations 
-    if (mut == 0){       e->NN.randomlyMutate(0.5f); }
-    else if (mut < 5){   e->NN.randomlyMutate(0.01f); }
-    else if (mut < 10){   e->NN.randomlyMutate(0.002f); }
-    else if (mut < 50){   e->NN.randomlyMutate(0.0005f); }
-    else {               e->NN.randomlyMutate(0.0f); }
+    if (mut == 0) { e->NN.randomlyMutate(0.5f); }
+    else if (mut < 5) { e->NN.randomlyMutate(0.01f); }
+    else if (mut < 10) { e->NN.randomlyMutate(0.002f); }
+    else if (mut < 50) { e->NN.randomlyMutate(0.0005f); }
+    else { e->NN.randomlyMutate(0.0f); }
 
     // Copy the parent color, can change later when calculating the specie of each fish if 
     // we find that it doesn't belong to it's parents' specie
     e->color = parentColor;
     fishes.push_back(e);
+    
+    
 }
-
-
-
-
-
 
 
 
