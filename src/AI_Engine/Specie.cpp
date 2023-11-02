@@ -1,11 +1,11 @@
 #include "Specie.hpp"
 
 std::vector<Specie> topSpecies;
-const unsigned int NB_SPECIES_TOP = 15; // nombre d'espèces sauvegardées dans le classement
+const unsigned int NB_SPECIES_TOP = 15; // number of species saved in the leaderboard (saved even if they disapear)
 
 
 
-const int GENETIC_DIVERSITY_IN_ONE_SPECIE = 75.0f; // lower value means less diversity in one specie
+const int GENETIC_DIVERSITY_IN_ONE_SPECIE = 40.0f; // lower value means less diversity in one specie
 
 unsigned int timeSinceAnalysis = 0;
 const unsigned int analyzeEvery = 250; // time between each deep analysis (1 = everytime we run updateTop)
@@ -13,7 +13,7 @@ const unsigned int analyzeEvery = 250; // time between each deep analysis (1 = e
 unsigned int prevAnalysisId = 0; //in order to not analyze 2 times the same specie since the result would be the same
 
 
-void updateTop(std::vector<Specie>& species) {
+void updateTop(std::vector<Specie>& species, const std::vector<Fish*>& fishes) {
     if (species.size() == 0) return;
 
     //the species vector should be sorted from oldest to youngest
@@ -40,38 +40,58 @@ void updateTop(std::vector<Specie>& species) {
 
 
     Specie& top1 = topSpecies[topSpecies.size()-1];
-    if (timeSinceAnalysis >= analyzeEvery && prevAnalysisId != top1._id){
-        prevAnalysisId = top1._id;
-        timeSinceAnalysis = 0;
+    if (timeSinceAnalysis >= analyzeEvery){
+        if (prevAnalysisId != top1._id) {
+            prevAnalysisId = top1._id;
+            timeSinceAnalysis = 0;
 
-        analize(top1._NN);	//analyze the best (in total time lived) specie since the start of the simulation
-        //analyser(Species[Species.size()-1]._reseauBase); //we can also analyze the best specie that is still alive
+            analize(top1._NN);	//analyze the best (in total time lived) specie since the start of the simulation
+            //analyser(Species[Species.size()-1]._reseauBase); //we can also analyze the best specie that is still alive
+        }
+        else {
+            //we already analyzed this specie
+            std::cout << "\nSpecie already analyzed last time";
+            timeSinceAnalysis = 0;
+        }
+    }
+
+
+
+    //update if a specie is alive or not
+    for (Specie& spe : topSpecies) {
+        spe._isAlive = false;
+        for (const Fish* f : fishes) {
+            if (f->speciesId == spe._id) {
+                spe._isAlive = true;
+                break;
+            }
+        }
     }
 }
 
 
 
 void updateSpeciesVector(std::vector<Specie>& species, const std::vector<Fish*>& fishes){
-    for (Specie& esp: species){
-        esp._age++;
+    for (Specie& spe: species){
+        spe._age++;
     }
 
     timeSinceAnalysis++;
-    std::cout << "Time until global analysis: " << timeSinceAnalysis << "/" << analyzeEvery;
 
     if (timeSinceAnalysis%10 == 0){
-        updateTop(species);
+        updateTop(species, fishes);
+        std::cout << "\nTime until global analysis: " << timeSinceAnalysis << "/" << analyzeEvery << "\n";
     }
 
     //if no Entity is using a Specie, then we delete it from our list
     if (timeSinceAnalysis%10 == 0){
         for (unsigned int i = 0; i < species.size();){
-            bool used = false;
+            species[i]._isAlive = false;
             for (unsigned int j = 0; j < fishes.size(); j++){
-                used = used || (species[i]._id == fishes[j]->speciesId);
+               species[i]._isAlive = species[i]._isAlive || (species[i]._id == fishes[j]->speciesId);
             }
 
-            if (used) {
+            if (species[i]._isAlive) {
                 i++;
             } else {
                 species.erase(species.begin()+i);
@@ -127,13 +147,13 @@ void updateEntitiesSpecies(const std::vector<Specie>& species, std::vector<Fish*
 
 
 std::string Specie::toString() const {
-    return "Age: "+std::to_string(_age)+"  id: "+std::to_string(_id) +"  Couleur: "+ colorToString(_color) +"\n"; 
+    return "\nAge: "+std::to_string(_age)+"  id: "+std::to_string(_id) +"  Color: "+ colorToString(_color) + (_isAlive ? " < " : "");
 }
 
-void displaySpecies(const std::vector<Specie>& Species) {
-    std::cout << "\n\n\n\n\n";
+void displaySpecies(const std::vector<Specie>& species) {
+    std::cout << "\n\n";
 
-    for (unsigned int i = 0; i < Species.size();i++){
-        coloredStdCout(Species[i].toString(), Species[i]._color);
+    for (unsigned int i = 0; i < species.size();i++){
+        coloredStdCout(species[i].toString(), species[i]._color);
     }
 }

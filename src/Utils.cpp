@@ -1,6 +1,6 @@
 #include "Utils.hpp"
 
-bool activer_couleurs_terminal;
+bool allow_colored_print;
 
 
 
@@ -169,7 +169,7 @@ sf::Color RGBtoHSV(float R, float G, float B){
 void coloredStdCout(std::string str, sf::Color color){
     //afficher en couleur (blanc de base)
     //https://en.wikipedia.org/wiki/ANSI_escape_code
-    if (!activer_couleurs_terminal) {
+    if (!allow_colored_print) {
         std::cout << str;
         return;
     }

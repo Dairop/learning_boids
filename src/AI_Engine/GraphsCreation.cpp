@@ -14,7 +14,7 @@ void saveAsSvg(std::string title, std::vector<float>& data, float graphWidth, st
 
     if (file.is_open()) {
         int increment = 1;
-        if (data.size() > 100) increment = data.size() / 20;
+        if (data.size() > 1000) increment = data.size() / 500;
 
         float svgWidth = graphWidth + 250.0f;
         float svgHeight = 550.0f;
@@ -44,13 +44,13 @@ void saveAsSvg(std::string title, std::vector<float>& data, float graphWidth, st
         //data
         std::string colorStr = rgbToHex(color.x, color.y, color.z);
         if (fill) {
-            for (unsigned int i = 0; i < data.size(); i++) {
+            for (unsigned int i = 0; i < data.size(); i += increment) {
                 file << "<rect x=\"" << offsetX + barWidth * i << "\" y=\"" << offsetY + graphHeight - data[i] * factor << "\" width=\"" << barWidth << "\" height=\"" << data[i] * factor << "\" style=\"fill:" + colorStr + ";\"/>" << std::endl;
             }
         }
         else {
             std::string pointsSvg = "";
-            for (unsigned int i = 0; i < data.size(); i++) {
+            for (unsigned int i = 0; i < data.size(); i += increment) {
                 pointsSvg += std::to_string((int)(offsetX + barWidth * i)) + "," + std::to_string((int)(offsetY + graphHeight - data[i] * factor)) + " ";
             }
 

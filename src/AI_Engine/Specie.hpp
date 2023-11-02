@@ -12,9 +12,11 @@ public:
     NeuralNetwork _NN;
     unsigned int _age = 0;
     sf::Color _color;
+    bool _isAlive;
 
     Specie(unsigned int id, NeuralNetwork n): _id(id), _NN(n) {
         _color = HSVtoRGB(_id%360, 1.0f, 1.0f);
+        _isAlive = true;
     };
     std::string toString() const;
 

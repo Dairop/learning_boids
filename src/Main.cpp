@@ -4,6 +4,10 @@
 
 #include <filesystem>
 
+
+
+extern bool allow_colored_print;
+
 //	create one big vertexArray with every body-parts of fishes and draw 
 //	them all at once to minimize the number of draw calls
 void drawAllCircles(sf::RenderWindow& window, std::vector<Fish*>& fishesVector, std::vector<Entity*>& foodVector, sf::Texture& object_texture) {
@@ -72,11 +76,10 @@ int main() {
 
 	std::srand(std::time(nullptr));
 
-	sf::Image tp;
 	int windowWidth = 1920;
 	int windowHeight = 1080;
 
-	int numberOfBoids = 600/16;
+	allow_colored_print = true;
 
 	sf::Texture backgroundRocksTexture;
 	backgroundRocksTexture.loadFromFile("img/rocks.png");
@@ -133,6 +136,7 @@ int main() {
 
 
 	unsigned long long int nbOfFramesDisplayed = 0;
+	bool was_space_key_pressed_last_frame = false;
 
 	while (window.isOpen()) {
 		//define quadtree
@@ -146,8 +150,13 @@ int main() {
 			}
 		}
 
+		//pause or unpause the simulation
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Space)) {
-			pause = false;// !pause;
+			if (!was_space_key_pressed_last_frame) pause = !pause;
+			was_space_key_pressed_last_frame = true;
+		}
+		else {
+			was_space_key_pressed_last_frame = false;
 		}
 
 

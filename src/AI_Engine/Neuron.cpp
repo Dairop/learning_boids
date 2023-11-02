@@ -19,7 +19,7 @@ void Neuron::execActivationFonction(){
     
     case 3:
         //Gaussian function - 0.5 (to have positives and negatives)
-        this->value = std::exp(-this->value *this->value) - 0.5;
+        this->value = std::exp(-this->value * this->value) - 0.5;
         break;
             
     case 4:

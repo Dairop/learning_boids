@@ -16,7 +16,7 @@ public:
 	Boid(sf::Vector2f pos) : Entity(pos) {
 		vel = sf::Vector2f(rand() % 5 - 2, rand() % 5 - 2);
 		acceleration = sf::Vector2f(rand() % 10 - 5, rand() % 10 - 5);
-		speed = size * 15;
+		speed = size * 10;
 	}
 
 	//set a circle at the Boid' position in va, which will be drawn later

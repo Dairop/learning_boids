@@ -12,8 +12,8 @@
 #include "Boid.hpp"
 #include "QuadTree.hpp"
 
-
-const float SIMULATION_SPEED = 1.0f; // Change the food cycles after changing the speed
+//best between 0.1f and 4.0f
+const float SIMULATION_SPEED = 2.0f; // Change the food cycles after changing the speed
 
 #endif
 

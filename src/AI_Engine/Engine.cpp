@@ -1,11 +1,13 @@
 #include "Engine.hpp"
 
-const float SPEED = 5.0f; // penser à changer l'apport de nourriture après modification de la vitesse
- 
-//min et max des cycles de nourriture
+
+
+//min of food cycles
 unsigned int minQttOfFoodPerFrame;
+//min of food cycles
 unsigned int maxQttOfFoodPerFrame;
 
+//time elapsed since the simulation start
 unsigned long long timeSinceStart = 0;
 
 
@@ -17,18 +19,18 @@ void Engine::init(sf::Vector2u szEnv){
     framesSinceStart = 0;
     nbInteractions100Frames = 0;
 
-    minQttOfFoodPerFrame = 5;
-    maxQttOfFoodPerFrame = 8;
+    minQttOfFoodPerFrame = 5; //change those values according to the SIMULATION_SPEED and what you want the engine to simulate
+    maxQttOfFoodPerFrame = 15; //change those values according to the SIMULATION_SPEED and what you want the engine to simulate
 
     species.clear();
 
-    //create 500 fishes
+    //create 500 fishes at the start
     for (unsigned int i = 0; i < 500; i++){
         addFish();
     }
 
-    //add food if < 1000
-    for (unsigned int i = 0; food.size() < 1000; i++){
+    //add 1000 food
+    for (unsigned int i = 0; i < 1000; i++){
         addFood();
     }
 }
@@ -37,25 +39,26 @@ void Engine::init(sf::Vector2u szEnv){
 
 
 void Engine::addFood(){
-    float _x, _y;
+    int _x, _y;
 
-    int tx = (sizeEnv.x) - 10.0f;
-    int ty = (sizeEnv.x) - 10.0f;
+    //we reduce the size of the environment so the food is always inside the quadtree
+    int tx = (sizeEnv.x) - 16;
+    int ty = (sizeEnv.y) - 16;
 
-    _x = rand() % (tx)+5.0f;
-    _y = rand() % (ty)+5.0f;
+    _x = (rand() % (tx)) + 8;
+    _y = (rand() % (ty)) + 8;
 
     food.push_back(new Entity(sf::Vector2f(_x, _y)));
 }
 
 void Engine::addFish(){
-    float _x, _y;
+    int _x, _y;
 
-    int tx = (sizeEnv.x) - 10.0f;
-    int ty = (sizeEnv.x) - 10.0f;
+    int tx = (sizeEnv.x) - 16;
+    int ty = (sizeEnv.y) - 16;
 
-    _x = rand() % (tx)+5.0f;
-    _y = rand() % (ty)+5.0f;
+    _x = (rand() % (tx)) + 8;
+    _y = (rand() % (ty)) + 8;
 
 
     Fish* a = new Fish(sf::Vector2f(_x, _y));
@@ -86,12 +89,14 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
     framesSinceStart++;
 
     //creates cycles of food abundance and shortages
-    //https://www.desmos.com/calculator/ezsdetdjqi 
+    //https://www.desmos.com/calculator/3s0gt87amr 
     float low_cycles = minQttOfFoodPerFrame;
     float high_cycles = maxQttOfFoodPerFrame;
+    double cycle_width = 500000.0;
+
     int foodPerFrameQtt = low_cycles + 
                 (high_cycles - low_cycles) * (
-                    std::sin( ((float)timeSinceStart*SIMULATION_SPEED)/10000)   * 0.5 + 0.5
+                    std::sin( ((double)timeSinceStart*SIMULATION_SPEED)/cycle_width)   * 0.5 + 0.5
                 ) ;
 
 
@@ -121,8 +126,8 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
         }
     }
 
-    if (this->framesSinceSpeciesUpdate >= 500) {
-        std::cout << "\nupdating species" << std::endl;
+    if (this->framesSinceSpeciesUpdate >= 150) {
+        //std::cout << "\nUpdating species" << std::endl;
         updateSpecies();
         this->framesSinceSpeciesUpdate = 0;
     }
@@ -246,7 +251,7 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
     }
 
     preventDyingSimulations();
-        }
+}
 
 
 
@@ -266,6 +271,7 @@ void Engine::preventDyingSimulations() {
         }
     }
 }
+
 
 
 
@@ -324,9 +330,9 @@ void Engine::reproduce(Fish* e1, Fish* e2){
     float mut = rand() % 100;
 
     // Change randomly "mut"*100% of the neural network in order to apply mutations 
-    if (mut == 0) { e->NN.randomlyMutate(0.5f); }
-    else if (mut < 5) { e->NN.randomlyMutate(0.01f); }
-    else if (mut < 10) { e->NN.randomlyMutate(0.002f); }
+    if (mut < 3) { e->NN.randomlyMutate(0.5f); }
+    else if (mut < 7) { e->NN.randomlyMutate(0.01f); }
+    else if (mut < 20) { e->NN.randomlyMutate(0.002f); }
     else if (mut < 50) { e->NN.randomlyMutate(0.0005f); }
     else { e->NN.randomlyMutate(0.0f); }
 
