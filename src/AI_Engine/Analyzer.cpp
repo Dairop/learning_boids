@@ -425,7 +425,15 @@ void testLinkedVariables(NeuralNetwork& nn, short int v1, short int v2, short in
         graphColor = sf::Vector3f(0, 255, 0);
     }
 
-    std::string fileName = nameX.substr(0, 4) + nameX.back() + " " + nameY.substr(0, 4) + nameY.back() + " effect on " + nameOutput.substr(0, 5);
+    std::string name1, name2;
+
+    if (nameX.length() > 4) name1 = nameX.substr(0, 4) + nameX.back();
+    else name1 = nameX;
+
+    if (nameY.length() > 4) name2 = nameY.substr(0, 4) + nameY.back();
+    else name2 = nameY;
+
+    std::string fileName = name1 + " " + name2 + " effect on " + nameOutput.substr(0, 5);
 
     createGraphWithFrequencyTwoParameters(fileName, nameX, nameY, data, numDivisions, numDivisions, graphColor, "Link between two variables: " + nameX + " and " + nameY + " on behavior: " + nameOutput);
 }

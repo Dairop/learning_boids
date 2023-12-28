@@ -10,6 +10,8 @@ unsigned int maxQttOfFoodPerFrame;
 //time elapsed since the simulation start
 unsigned long long timeSinceStart = 0;
 
+unsigned int frenquencyUpdateSpecies = 150;
+
 
 void Engine::init(sf::Vector2u szEnv){
     this->sizeEnv = szEnv;
@@ -126,7 +128,7 @@ void Engine::update(QuadTree& boidsQuad, QuadTree& foodQuad, long dt){
         }
     }
 
-    if (this->framesSinceSpeciesUpdate >= 150) {
+    if (this->framesSinceSpeciesUpdate >= frenquencyUpdateSpecies) {
         //std::cout << "\nUpdating species" << std::endl;
         updateSpecies();
         this->framesSinceSpeciesUpdate = 0;
@@ -331,7 +333,7 @@ void Engine::reproduce(Fish* e1, Fish* e2){
 
     // Change randomly "mut"*100% of the neural network in order to apply mutations 
     if (mut < 3) { e->NN.randomlyMutate(0.5f); }
-    else if (mut < 7) { e->NN.randomlyMutate(0.01f); }
+    else if (mut < 7) { e->NN.randomlyMutate(0.02f); }
     else if (mut < 20) { e->NN.randomlyMutate(0.002f); }
     else if (mut < 50) { e->NN.randomlyMutate(0.0005f); }
     else { e->NN.randomlyMutate(0.0f); }
